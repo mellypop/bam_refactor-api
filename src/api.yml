@@ -1,0 +1,167 @@
+openapi: 3.0.0
+info:
+  version: 0.1.0
+  title: RAPTR Order API
+  description:
+    The endpoints listed in this API have been created to facilitate the new launcher
+servers:
+  - url: https://localhost/raptr/api/stjude/v2
+    description: Development
+tags:
+  - name: Bam
+  - name: Order
+  - name: Project
+  - name: Target
+paths:
+  /order:
+    post:
+      summary: Create Order
+      description: Create a new Order
+      tags:
+        - Order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                project_id:
+                  type: integer
+                  description: The primary key for the Project the new Order will be associated with
+                  example: 123456
+                target_name:
+                  type: string
+                  description: The name of the Target for the new Order
+                  example: WHOLE_GENOME
+              required:
+                - project_id
+                - target_name
+      responses:
+        201:
+          description: The newly created Order
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Order'
+  /targets:
+    get:
+      summary: List Targets
+      tags:
+        - Target
+      responses:
+        200:
+          description: An array of all available targets
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - $ref: '#/components/schemas/Paginated'
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Target'
+components:
+  schemas:
+    Order:
+      type: object
+      properties:
+        order_id:
+          example: 123456
+          type: integer
+        project_id:
+          example: 123456
+          type: integer
+        suite_id:
+          example: 123456
+          type: integer
+        analyst_assigned_to:
+          example: username
+          type: string
+    Project:
+      type: object
+      properties:
+        project_id:
+          description: The primary key of the Project record
+          example: 123456
+          type: integer
+    Target:
+      type: object
+      properties:
+        target_id:
+          description: The primary key of the Target record
+          example: 123456
+          type: integer
+        analyte:
+          example: DNA
+          type: string
+        description:
+          example: Whole genome sequencing
+          type: string
+        name:
+          description: The name of the Target
+          example: WHOLE_GENOME
+          type: string
+        seq_type:
+          description: The sequencing type for the Target
+          example: WHOLEGENOME
+          type: string
+    Success:
+      type: object
+      properties:
+        data:
+          type: object
+    Paginated:
+      type: object
+      properties:
+        links:
+          type: object
+          properties:
+            first:
+              type: string
+              description: A uri for the first page of results
+            last:
+              type: string
+              description: A uri for the last page of results
+            prev:
+              type: string
+              description: A uri for the previous page of results
+              example: null
+            next:
+              type: string
+              description: A uri for the next page of results
+        meta:
+          type: object
+          properties:
+            current_page:
+              type: integer
+              description: The current page number of results
+              example: 1
+            from:
+              type: integer
+              example: 1
+              description: The index of the first entry of the current page
+            last_page:
+              type: integer
+              example: 100
+              description: The number of pages of results
+            path:
+              type: string
+              description: The uri used to get this page of results
+            per_page:
+              type: integer
+              description: The number of results per page
+            to:
+              type: integer
+              description: The index of the last result of the current page
+              example: 15
+            total:
+              type: integer
+              description: The total number of results available for the request
+              example: 1500
