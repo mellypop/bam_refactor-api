@@ -198,6 +198,25 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Sample'
+  /suites:
+    get:
+      summary: List Suites
+      tags:
+        - Suite
+      responses:
+        200:
+          description: All Suites
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - $ref: '#/components/schemas/Paginated'
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Suite'
   /targets:
     get:
       summary: List Targets
@@ -219,6 +238,35 @@ paths:
                       $ref: '#/components/schemas/Target'
 components:
   schemas:
+    AnlsType:
+      type: object
+      properties:
+        anls_type_id:
+          description: The primary key of the AnlsType record
+          example: 123456
+          type: integer
+        bam_pair_role:
+          description: Which of the two Bams in a BamPair the AnlsType is intended for
+          example: case
+          type: string
+        blt_item_type:
+          description: The type of BLT item (bam, bam_pair, etc) the AnlsType runs on
+          example: bam
+          type: string
+        description:
+          type: string
+        is_combable:
+          description: Whether or not the AnlsType should be combed
+          type: boolean
+        is_mapper:
+          description: Whether or not the AnlsType is a mapping AnlsType
+          type: boolean
+        name:
+          type: string
+        ordinal:
+          description: A numeric value used mainly to order AnlsTypes in output
+          example: 1
+          type: integer
     Bam:
       type: object
       properties:
