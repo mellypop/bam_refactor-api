@@ -277,6 +277,9 @@ components:
           type: string
         username:
           type: string
+        suite:
+          oneOf:
+            - $ref: '#/components/schemas/Suite'
     Project:
       type: object
       properties:
@@ -284,6 +287,23 @@ components:
           description: The primary key of the Project record
           example: 123456
           type: integer
+        default_tartan_id:
+          description: A foreign key indicating which TARTan the project exists in
+          example: 1
+          type: integer
+        description:
+          type: string
+        name:
+          description: The primary name of a project, often the name of a PI or a large project
+          type: string
+        subproject:
+          description: A secondary name for a project, differentiating it from projects with the same name
+          type: string
+        notes:
+          type: string
+        username:
+          description: The username of the primary investigator listed on the project
+          type: string
     Sample:
       type: object
       properties:
@@ -323,6 +343,25 @@ components:
           description: A single character code indicating the type of sample
           example: D
           type: string
+    Suite:
+      type: object
+      properties:
+        suite_id:
+          description: The primary key of the Suite record
+          example: 123456
+          type: integer
+        genome_id:
+          example: 123456
+          type: integer
+        description:
+          description: A description of the suite and its purpose
+          type: string
+        name:
+          description: The name assigned to the suite
+          type: string
+        is_default:
+          description: A flag indicating whether or not the Suite is a default suite
+          type: boolean
     Target:
       type: object
       properties:
