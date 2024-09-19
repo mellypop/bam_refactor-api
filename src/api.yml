@@ -166,6 +166,96 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Project'
+  /project/{project_id}:
+    get:
+      summary: Show Project
+      tags:
+        - Project
+      responses:
+        200:
+          description: Show Project
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Project'
+  /project/{project_id}/samples:
+    get:
+      summary: Samples for Project
+      tags:
+        - Project
+        - Sample
+      responses:
+        200:
+          description: Show Project Samples
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Project'
+                    properties:
+                      samples:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Sample'
+    post:
+      summary: Add Samples to Project
+      tags:
+        - Project
+        - Sample
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                samples:
+                  type: array
+                  items:
+                    description: An array of sample_ids
+                    example: 123456
+                    type: integer
+      responses:
+        201:
+          description: Samples Added
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Project'
+                    properties:
+                      samples:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Sample'
+  /projects:
+    get:
+      summary: List Projects
+      tags:
+        - Project
+      responses:
+        200:
+          description: All Samples
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - $ref: '#/components/schemas/Paginated'
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Project'
   /samples:
     get:
       summary: List Samples
