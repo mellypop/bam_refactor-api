@@ -11,6 +11,8 @@ tags:
   - name: Bam
   - name: Order
   - name: Project
+  - name: Sample
+  - name: Suite
   - name: Target
 paths:
   /bam:
@@ -326,8 +328,7 @@ components:
         username:
           type: string
         suite:
-          oneOf:
-            - $ref: '#/components/schemas/Suite'
+          $ref: '#/components/schemas/Suite'
     Project:
       type: object
       properties:
