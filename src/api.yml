@@ -13,6 +13,32 @@ tags:
   - name: Project
   - name: Target
 paths:
+  /bam:
+    post:
+      summary: Create Bam
+      tags:
+        - Bam
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sample_target_project_id:
+                  description: The SampleTargetProject for the Bam
+                  type: integer
+                  example: 123456
+      responses:
+        201:
+          description: Bam created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Bam'
   /order:
     post:
       summary: Create Order
@@ -20,22 +46,28 @@ paths:
       tags:
         - Order
       requestBody:
-        required: true
+        #required: true
         content:
           application/json:
             schema:
               type: object
               properties:
                 project_id:
-                  type: integer
                   description: The primary key for the Project the new Order will be associated with
                   example: 123456
+                  type: integer
+                suite_id:
+                  example: 123456
+                  type: integer
                 target_name:
                   type: string
                   description: The name of the Target for the new Order
                   example: WHOLE_GENOME
+                notes:
+                  type: string
               required:
                 - project_id
+                - suite_id
                 - target_name
       responses:
         201:
@@ -48,6 +80,90 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Order'
+  /order/{order_id}:
+    get:
+      summary: Show Order
+      tags:
+        - Order
+      responses:
+        200:
+          description: Show Order
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Order'
+  /order/{order_id}/bam:
+    post:
+      summary: Add Bam to Order
+      tags:
+        - Order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bam_id:
+                  example: 123456
+                  type: integer
+              required:
+                - bam_id
+      responses:
+        201:
+          description: Bam Added
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    allOf:
+                      - $ref: '#/components/schemas/Order'
+                    properties:
+                      bams:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Bam'
+  /orders:
+    get:
+      summary: List Orders
+      tags:
+        - Order
+      responses:
+        200:
+          description: All Orders
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - $ref: '#/components/schemas/Paginated'
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Order'
+  /project:
+    post:
+      summary: Create Project
+      tags:
+        - Project
+      responses:
+        201:
+          description: Project created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Project'
   /targets:
     get:
       summary: List Targets
@@ -69,6 +185,33 @@ paths:
                       $ref: '#/components/schemas/Target'
 components:
   schemas:
+    Bam:
+      type: object
+      properties:
+        bam_id:
+          example: 123456
+          type: integer
+        anls_type_id:
+          example: 123456
+          type: integer
+        gedi_source_id:
+          example: 123456
+          type: integer
+        genome_id:
+          example: 123456
+          type: integer
+        sample_target_project_id:
+          example: 123456
+          type: integer
+        qualifier:
+          example: '-'
+          type: string
+        notes:
+          example: Some note
+          type: string
+        status:
+          example: Waiting
+          type: string
     Order:
       type: object
       properties:
@@ -83,6 +226,22 @@ components:
           type: integer
         analyst_assigned_to:
           example: username
+          type: string
+        germline_reviewer_assigned_to:
+          type: string
+        notes:
+          type: string
+        ord_code:
+          description: A secondary identifier for Order records
+          example: 123456
+          type: integer
+        pathologist_assigned_to:
+          type: string
+        source:
+          type: string
+        source_type:
+          type: string
+        username:
           type: string
     Project:
       type: object
