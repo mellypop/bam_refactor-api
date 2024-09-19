@@ -164,6 +164,40 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Project'
+  /samples:
+    get:
+      summary: List Samples
+      tags:
+        - Sample
+      responses:
+        200:
+          description: All Samples
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - $ref: '#/components/schemas/Paginated'
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Sample'
+    post:
+      summary: Create Sample
+      tags:
+        - Sample
+      responses:
+        201:
+          description: Sample Created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Sample'
   /targets:
     get:
       summary: List Targets
@@ -250,6 +284,45 @@ components:
           description: The primary key of the Project record
           example: 123456
           type: integer
+    Sample:
+      type: object
+      properties:
+        sample_id:
+          description: THe primary key of the Sample record
+          example: 123456
+          type: integer
+        subject_id:
+          description: A foreign key pointing to the Sample's Subject
+          example: 123456
+          type: integer
+        disease_code:
+          description: A short code indicating the disease for the Sample
+          example: NORM
+          type: string
+        formal_name:
+          description: The name of the Sample
+          example: SJNORM012345_D1
+          type: string
+        pi_name:
+          description: A secondary identifier used for the Sample
+          example: sample1
+          type: string
+        lab_name:
+          description: The long-form Sample name following the form {formal_name}-{lab_name}
+          example: SJNORM012345_D1-sample1
+          type: string
+        replaced_by:
+          description: If not null, the sample_id of the Sample that has replaced this Sample
+          example: 123456
+          type: integer
+        sample_index:
+          description: An index value incremented to differentiate between Samples of the same type
+          example: 1
+          type: integer
+        sample_type:
+          description: A single character code indicating the type of sample
+          example: D
+          type: string
     Target:
       type: object
       properties:
