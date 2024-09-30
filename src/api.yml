@@ -202,7 +202,7 @@ paths:
       tags:
         - Order
       requestBody:
-        #required: true
+        required: true
         content:
           application/json:
             schema:
@@ -396,11 +396,120 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Project'
+  /sample:
+    post:
+      summary: Create Sample
+      tags:
+        - Sample
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                subject_id:
+                  example: 123456
+                disease_code:
+                  type: string
+                pi_name:
+                  type: string
+                sample_type:
+                  $ref: '#/components/schemas/SampleType'
+              required:
+                - subject_id
+                - disease_code
+                - pi_name
+                - sample_type
+      responses:
+        201:
+          description: Sample Created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Sample'
+  /sample/{sample_id}:
+    get:
+      summary: Show Sample
+      tags:
+        - Sample
+      parameters:
+        - name: sample_id
+          description: A unique numeric identifier for a Sample
+          example: 123456
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Show Sample
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Sample'
+    patch:
+      summary: Update Sample
+      tags:
+        - Sample
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                subject_id:
+                  example: 123456
+                  type: integer
+                disease_code:
+                  description: A short code used to denote a particular disease
+                  type: string
+                pi_name:
+                  type: string
+                sample_type:
+                  $ref: '#/components/schemas/SampleType'
+      responses:
+        200:
+          description: Sample Updated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Sample'
+
   /samples:
     get:
       summary: List Samples
       tags:
         - Sample
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                disease_code:
+                  type: string
+                formal_name:
+                  type: string
+                pi_name:
+                  type: string
+                lab_name:
+                  type: string
+                sample_type:
+                  $ref: '#/components/schemas/SampleType'
       responses:
         200:
           description: All Samples
@@ -415,13 +524,14 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Sample'
+  /subject:
     post:
-      summary: Create Sample
+      summary: Create Subject
       tags:
-        - Sample
+        - Subject
       responses:
         201:
-          description: Sample Created
+          description: Subject created
           content:
             application/json:
               schema:
@@ -429,7 +539,34 @@ paths:
                   - $ref: '#/components/schemas/Success'
                 properties:
                   data:
-                    $ref: '#/components/schemas/Sample'
+                    $ref: '#/components/schemas/Subject'
+  /subjects:
+    post:
+      summary: Create Subject
+      tags:
+        - Subject
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                organism_id:
+                  example: 123456
+                  type: integer
+      responses:
+        201:
+          description: Subject created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Subject'
   /suites:
     get:
       summary: List Suites
@@ -469,6 +606,24 @@ paths:
                     items:
                       $ref: '#/components/schemas/Target'
 components:
+  requestBodies:
+    Sample:
+      description: The standard request body for creating or updating a Sample
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              subject_id:
+                example: 123456
+                type: integer
+              disease_code:
+                description: A short code used to denote a particular disease
+                type: string
+              pi_name:
+                type: string
+              sample_type:
+                $ref: '#/components/schemas/SampleType'
   schemas:
     AnlsType:
       type: object
@@ -648,8 +803,33 @@ components:
           example: 1
           type: integer
         sample_type:
-          description: A single character code indicating the type of sample
-          example: D
+          $ref: '#/components/schemas/SampleType'
+    SampleType:
+      description: A single character code indicating the type of sample
+      type: string
+      enum:
+        - C
+        - D
+        - G
+        - O
+        - P
+        - R
+        - X
+    Subject:
+      type: object
+      properties:
+        subject_id:
+          description: The primary key that uniquely identifies the Subject
+          example: 123456
+          type: integer
+        organism_id:
+          description: The id for the Organism the Subject is
+          example: 123456
+          type: integer
+        name:
+          description: The name of the Subject
+          type: string
+        synonyms:
           type: string
     Suite:
       type: object
