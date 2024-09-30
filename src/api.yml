@@ -13,6 +13,7 @@ tags:
   - name: Order
   - name: Project
   - name: Sample
+  - name: Subject
   - name: Suite
   - name: Target
 paths:
@@ -581,6 +582,18 @@ paths:
       summary: Create Subject
       tags:
         - Subject
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                organism_id:
+                  example: 123456
+                  type: integer
+              required:
+                - organism_id
       responses:
         201:
           description: Subject created
@@ -592,9 +605,33 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Subject'
+  /subject/{subject_id}:
+    get:
+      summary: Show Subject
+      tags:
+        - Subject
+      parameters:
+        - name: subject_id
+          description: A unique numeric identifier for a Subject
+          example: 123456
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Show Subject
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Subject'
   /subjects:
-    post:
-      summary: Create Subject
+    get:
+      summary: List Subjects
       tags:
         - Subject
       requestBody:
@@ -605,20 +642,23 @@ paths:
               properties:
                 name:
                   type: string
-                organism_id:
+                genome_id:
                   example: 123456
                   type: integer
       responses:
-        201:
-          description: Subject created
+        200:
+          description: List Subjects
           content:
             application/json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/Success'
+                  - $ref: '#/components/schemas/Paginated'
                 properties:
                   data:
-                    $ref: '#/components/schemas/Subject'
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Subject'
   /suites:
     get:
       summary: List Suites
