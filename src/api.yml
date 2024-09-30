@@ -163,6 +163,32 @@ paths:
                         type: array
                         items:
                           $ref: '#/components/schemas/Bam'
+  /order/{order_id}/status:
+    post:
+      summary: Update Order Status
+      tags:
+        - Order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  description: The new status to apply to the Order
+                  enum: ['canceled', 'complete', 'draft', 'hold', 'normal']
+                  example: normal
+      responses:
+        200:
+          description: Show Order
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Order'
   /orders:
     get:
       summary: List Orders
