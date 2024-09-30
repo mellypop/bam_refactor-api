@@ -103,7 +103,6 @@ paths:
       tags:
         - Bam
       requestBody:
-        required: true
         content:
           application/json:
             schema:
