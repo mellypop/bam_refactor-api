@@ -289,6 +289,15 @@ paths:
                   data:
                     $ref: '#/components/schemas/Order'
   /order/{order_id}:
+    parameters:
+      - name: order_id
+        description:
+          A unique numeric identifier for an Order
+        example: 123456
+        in: path
+        required: true
+        schema:
+          type: integer
     get:
       summary: Show Order
       tags:
@@ -343,6 +352,7 @@ paths:
       tags:
         - Order
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -350,11 +360,12 @@ paths:
               properties:
                 status:
                   description: The new status to apply to the Order
-                  enum: ['canceled', 'complete', 'draft', 'hold', 'normal']
-                  example: normal
+                  $ref: "#/components/schemas/OrderStatus"
+              required:
+                - status
       responses:
         200:
-          description: Show Order
+          description: Order Status Updated
           content:
             application/json:
               schema:
@@ -870,10 +881,21 @@ components:
           type: string
         source_type:
           type: string
+        status:
+          $ref: '#/components/schemas/OrderStatus'
         username:
           type: string
         suite:
           $ref: '#/components/schemas/Suite'
+    OrderStatus:
+      type: string
+      example: normal
+      enum: 
+        - 'canceled'
+        - 'complete'
+        - 'draft'
+        - 'hold'
+        - 'normal'
     Project:
       type: object
       properties:
