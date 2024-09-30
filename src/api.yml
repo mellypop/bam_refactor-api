@@ -143,7 +143,7 @@ paths:
               type: object
               properties:
                 status:
-                  enum: ['Normal', 'Obsolete', 'Special']
+                  $ref: '#/components/schemas/BamPairStatus'
       responses:
         200:
           description: Update BamPair Status
@@ -155,6 +155,46 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/BamPair'
+  /bam_pairs:
+    get:
+      summary: List BamPairs
+      description:
+        List all available BamPairs or optionally filter by one of the values shown
+        in the request body below.
+      tags:
+        - BamPair
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                project_id:
+                  example: 123456
+                  type: integer
+                sample_id:
+                  example: 123456
+                  type: integer
+                target_id:
+                  example: 123456
+                  type: integer
+                qualifier:
+                  example: '-'
+                  type: string
+      responses:
+        200:
+          description: List Bams
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - $ref: '#/components/schemas/Paginated'
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BamPair'
   /order:
     post:
       summary: Create Order
@@ -533,6 +573,28 @@ components:
           description: The primary key used to uniquely identify the BamPair
           example: 123456
           type: integer
+        case_bam_id:
+          description: The id for the case Bam
+          example: 123456
+          type: integer
+        control_bam_id:
+          description: The id for the control Bam
+          example: 123456
+          type: integer
+        notes:
+          type: string
+        qualifier:
+          description: A string value used to allow for multiple BamPairs, usually '-'
+          example: '-'
+          type: string
+        status:
+          $ref: '#/components/schemas/BamPairStatus'
+    BamPairStatus:
+      type: string
+      enum:
+        - 'Normal'
+        - 'Obsolete'
+        - 'Special'
     Order:
       type: object
       properties:
