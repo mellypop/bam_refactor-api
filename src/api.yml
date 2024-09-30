@@ -9,6 +9,7 @@ servers:
     description: Development
 tags:
   - name: Bam
+  - name: BamPair
   - name: Order
   - name: Project
   - name: Sample
@@ -70,9 +71,90 @@ paths:
       summary: Update Bam Status
       tags:
         - Bam
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  enum: ['Normal', 'Pending', 'QCFailed', 'Waiting']
       responses:
         200:
           description: Status Updated Successfully
+  /bam_pair:
+    post:
+      summary: Create BamPair
+      tags:
+        - BamPair
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                case_bam_id:
+                  example: 123456
+                  type: integer
+                control_bam_id:
+                  example: 123456
+                  type: integer
+                notes:
+                  type: string
+                qualifier:
+                  example: '-'
+                  type: string
+      responses:
+        200:
+          description: BamPair Created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/BamPair'
+  /bam_pair/{bam_pair_id}:
+    get:
+      summary: Show BamPair
+      tags:
+        - BamPair
+      responses:
+        200:
+          description: Show BamPair
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/BamPair'
+  /bam_pair/{bam_pair_id}/status:
+    post:
+      summary: Update BamPair Status
+      tags:
+        - BamPair
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  enum: ['Normal', 'Obsolete', 'Special']
+      responses:
+        200:
+          description: Update BamPair Status
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/BamPair'
   /order:
     post:
       summary: Create Order
@@ -444,6 +526,13 @@ components:
         status:
           example: Waiting
           type: string
+    BamPair:
+      type: object
+      properties:
+        bam_pair_id:
+          description: The primary key used to uniquely identify the BamPair
+          example: 123456
+          type: integer
     Order:
       type: object
       properties:
