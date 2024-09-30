@@ -26,10 +26,18 @@ paths:
             schema:
               type: object
               properties:
-                sample_target_project_id:
-                  description: The SampleTargetProject for the Bam
+                project_id:
+                  description: The id for the Project the Bam should be created for
                   type: integer
                   example: 123456
+                sample_id:
+                  description: The id for the Sample the Bam should be created for
+                  type: integer
+                  example: 123456
+                target_id:
+                  description: The id for the Target that applies to the Bam
+                  example: 123456
+                  type: integer
       responses:
         201:
           description: Bam created
@@ -41,6 +49,30 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Bam'
+  /bam/{bam_id}:
+    get:
+      summary: Show Bam
+      tags:
+        - Bam
+      responses:
+        200:
+          description: Show Bam
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Bam'
+  /bam/{bam_id}/status:
+    post:
+      summary: Update Bam Status
+      tags:
+        - Bam
+      responses:
+        200:
+          description: Status Updated Successfully
   /order:
     post:
       summary: Create Order
