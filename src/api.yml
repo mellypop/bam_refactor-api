@@ -93,6 +93,47 @@ paths:
       responses:
         200:
           description: Status Updated Successfully
+  /bams:
+    get:
+      summary: List Bams
+      description:
+        List all Bams or optionally filter Bams based on project, sample, or
+        target
+      tags:
+        - Bam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                project_id:
+                  description: The id for the Project the Bam should be created for
+                  type: integer
+                  example: 123456
+                sample_id:
+                  description: The id for the Sample the Bam should be created for
+                  type: integer
+                  example: 123456
+                target_id:
+                  description: The id for the Target that applies to the Bam
+                  example: 123456
+                  type: integer
+      responses:
+        200:
+          description: Bam created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Bam'
+  #/bam/{bam_id}:
   /bam_pair:
     post:
       summary: Create BamPair
