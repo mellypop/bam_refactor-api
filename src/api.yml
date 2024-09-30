@@ -486,18 +486,18 @@ paths:
                   data:
                     $ref: '#/components/schemas/Sample'
   /sample/{sample_id}:
+    parameters:
+      - name: sample_id
+        description: A unique numeric identifier for a Sample
+        example: 123456
+        in: path
+        required: true
+        schema:
+          type: integer
     get:
       summary: Show Sample
       tags:
         - Sample
-      parameters:
-        - name: sample_id
-          description: A unique numeric identifier for a Sample
-          example: 123456
-          in: path
-          required: true
-          schema:
-            type: integer
       responses:
         200:
           description: Show Sample
@@ -541,7 +541,47 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Sample'
-
+  /sample/{sample_id}/synonym:
+    parameters:
+      - name: sample_id
+        description: A unique numeric identifier for a Sample
+        example: 123456
+        in: path
+        required: true
+        schema:
+          type: integer
+    post:
+      summary: Add Sample Synonym
+      tags:
+        - Sample
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                source:
+                  description: The source or type of synonym being added
+                  example: SJUID
+                  type: string
+                synonym:
+                  description: The value of the synonym to be added
+                  type: string
+              required:
+                - source
+                - synonym
+      responses:
+        201:
+          description: Sample Synonym Added
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Sample'
   /samples:
     get:
       summary: List Samples
