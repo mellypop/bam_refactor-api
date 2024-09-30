@@ -365,8 +365,23 @@ paths:
   /projects:
     get:
       summary: List Projects
+      description:
+        List all samples or optionally filter by name, subproject, and/or the
+        username of the project lead.
       tags:
         - Project
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                subproject:
+                  type: string
+                username:
+                  type: string
       responses:
         200:
           description: All Samples
