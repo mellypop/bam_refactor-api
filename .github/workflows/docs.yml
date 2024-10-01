@@ -1,0 +1,36 @@
+name: docs
+
+on:
+  push:
+    branches:
+      - main
+      
+jobs:
+  gh-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+        
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install mkdocs
+          python3 -m pip install mkdocs-bootswatch
+          python3 -m pip install mkdocs-swagger-ui-tag
+          python3 -m pip install mkdocs-material
+        
+      - name: Build docs
+        run: mkdocs build
+        
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
+              
