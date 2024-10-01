@@ -1,1 +1,1 @@
-<swagger-ui src="../src/api.yml"/>
+<swagger-ui src="api.yml"/>
