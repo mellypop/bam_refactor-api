@@ -22,6 +22,9 @@
 <input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
 <label class="md-overlay" for="__drawer"></label>
 <div data-md-component="skip">
+<a class="md-skip" href="#guidelinesrules">
+          Skip to content
+        </a>
 </div>
 <div data-md-component="announce">
 </div>
@@ -102,11 +105,46 @@
 </li>
 <li class="md-nav__item md-nav__item--active">
 <input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    Guidelines
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
 <a class="md-nav__link md-nav__link--active" href="./">
 <span class="md-ellipsis">
     Guidelines
   </span>
 </a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#small-atomic-actions">
+<span class="md-ellipsis">
+      Small, Atomic Actions
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#path-naming">
+<span class="md-ellipsis">
+      Path Naming
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#http-verbs">
+<span class="md-ellipsis">
+      HTTP Verbs
+    </span>
+</a>
+</li>
+</ul>
+</nav>
 </li>
 </ul>
 </nav>
@@ -117,13 +155,83 @@
 <div class="md-sidebar__scrollwrap">
 <div class="md-sidebar__inner">
 <nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#small-atomic-actions">
+<span class="md-ellipsis">
+      Small, Atomic Actions
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#path-naming">
+<span class="md-ellipsis">
+      Path Naming
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#http-verbs">
+<span class="md-ellipsis">
+      HTTP Verbs
+    </span>
+</a>
+</li>
+</ul>
 </nav>
 </div>
 </div>
 </div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
-<h1>Guidelines</h1>
+<h1 id="guidelinesrules">Guidelines/Rules</h1>
+<p>The following is the current working design rules for this API design. As even
+these rules are currently in development, nothing on this page should be
+considered set in stone, though the rules herein should align to what is in
+the <a href="/documentation">API documentation</a>.</p>
+<h2 id="small-atomic-actions">Small, Atomic Actions</h2>
+<p>This API is designed to offer individual, atomic actions over more complex,
+purpose-built endpoints. Thus, for most actual uses, multiple endpoints will
+need to be used. For example, in order to create an Order and assign Bams to it,
+the Order should be created along with the Subjects, Samples, and Bams only after
+which could the resulting Bams be assigned to the Order.</p>
+<h2 id="path-naming">Path Naming</h2>
+<ul>
+<li>Path names must include the name of the model being created, deleted, updated,
+or requested.</li>
+<li>In the case of model names made up of more than one word (e.g., disease code),
+  the names of these models must be included in snake case (e.g., disease_code)
+  and not in camel case (e.g., diseaseCode) or kebab case (e.g., disease-code).</li>
+<li>Path names must be singular if they are expected to create, delete, update, or
+  return a single record. For example, an endpoint to create a Subject would be
+  <code>/subject</code></li>
+<li>Path names must be plural if they are expected to create, delete, update, or
+  return multiple records. For example, an endpoint to list all Subject records
+  would be <code>/subjects</code></li>
+<li>In the case of compound path names (i.e., paths involving the names of more than
+  one model), the final model name in the path's plurality must indicate whether
+  it interacts with one or more records.</li>
+<li>References to existing records must be made via the primary key for that type
+  of record whenever possible. For example, a specific Bam would be referenced
+  by its <code>bam_id</code>.</li>
+<li>Paths must begin with the name of the model being interacted with. For example,
+  if a user is creating a project, the path should begin with <code>/project</code>.</li>
+<li>In the case of smaller models that are additional information to another
+    model but not useful in isolation should be accessed via a route beginning
+    with the name of the primary model. For example, an endpoint for adding a
+    synonym to a Sample would look like <code>/sample/{sample_id}/synonym</code></li>
+</ul>
+<h2 id="http-verbs">HTTP Verbs</h2>
+<ul>
+<li><code>GET</code> must only be used when requesting information. This verb should not
+  be used to create, update, or destroy a record</li>
+<li><code>POST</code> must be used when creating a record, even records in join tables.</li>
+<li><code>PATCH</code> should be used when modifying a record.</li>
+</ul>
 </article>
 </div>
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>

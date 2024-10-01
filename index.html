@@ -22,6 +22,9 @@
 <input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
 <label class="md-overlay" for="__drawer"></label>
 <div data-md-component="skip">
+<a class="md-skip" href="#bam-refactor-api">
+          Skip to content
+        </a>
 </div>
 <div data-md-component="announce">
 </div>
@@ -123,7 +126,17 @@
 </div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
-<h1>Home</h1>
+<h1 id="bam-refactor-api">Bam Refactor API</h1>
+<p>As part of the Bam Refactor project, a new API is being created to help avoid
+making direct database queries wherever possible, thus making most interactions
+with the RAPTR database resistant to schema changes.</p>
+<p>This site is intended to house the design documentation and API guidelines to
+make both more accessible while this design is underway. The finalized API
+documentation will be included in RAPTR's standard API documentation once it has
+been solidified and implemented.</p>
+<p>As this site is intended to aid in the design process, nothing herein should be
+seen as set in stone. The guidelines and documentation are subject to change as
+design decisions are finalized.</p>
 </article>
 </div>
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
