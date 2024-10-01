@@ -1,0 +1,18 @@
+site_name: "RAPTR API Design"
+repo_url: 'https://github.com/mellypop/bam_refactor-api'
+
+site_description:
+  This mini site is meant to serve as documentation for an API design that is
+  being created to go along with the Bam Refactor changes. Everything contained
+  herein is a prospective design and therefore subject to change.
+site_author: mellypop
+
+nav:
+  - Home: index.md
+  - Documentation: documentation.md
+  - Guidelines: guidelines.md
+
+plugins:
+  - swagger-ui-tag
+
+theme: material
