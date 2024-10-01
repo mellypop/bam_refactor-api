@@ -102,24 +102,37 @@ paths:
         target
       tags:
         - Bam
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                project_id:
-                  description: The id for the Project the Bam should be created for
-                  type: integer
-                  example: 123456
-                sample_id:
-                  description: The id for the Sample the Bam should be created for
-                  type: integer
-                  example: 123456
-                target_id:
-                  description: The id for the Target that applies to the Bam
-                  example: 123456
-                  type: integer
+      parameters:
+        - name: project_id
+          description: The id for the Project the Bam was created for
+          example: 123456
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: sample_id
+          description: The id for the Sample the Bam was created for
+          example: 123456
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: target_id
+          description: The id for the Target the Bam was created for
+          example: 123456
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: qualifier
+          description:
+            The string used to separate this Bam from others sharing its sample,
+            target, and project.
+          example: '-'
+          in: query
+          required: false
+          schema:
+            type: string
       responses:
         200:
           description: Bam created
@@ -215,24 +228,30 @@ paths:
         in the request body below.
       tags:
         - Bam Pair
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                project_id:
-                  example: 123456
-                  type: integer
-                sample_id:
-                  example: 123456
-                  type: integer
-                target_id:
-                  example: 123456
-                  type: integer
-                qualifier:
-                  example: '-'
-                  type: string
+      parameters:
+        - name: case_bam_id
+          description: The id for the case Bam of the Bam Pair
+          example: 123456
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: control_bam_id
+          description: The id for the control Bam of the Bam Pair
+          example: 123456
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: qualifier
+          description:
+            The string used to separate this Bam Pair from others sharing its
+            case and control Bams
+          example: '-'
+          in: query
+          required: false
+          schema:
+            type: string
       responses:
         200:
           description: List Bams
@@ -379,6 +398,24 @@ paths:
       summary: List Orders
       tags:
         - Order
+      parameters:
+        - name: project_id
+          example: 123456
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: suite_id
+          example: 123456
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: username
+          in: query
+          required: false
+          schema:
+            type: string
       responses:
         200:
           description: All Orders
@@ -433,18 +470,22 @@ paths:
         username of the project lead.
       tags:
         - Project
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                subproject:
-                  type: string
-                username:
-                  type: string
+      parameters:
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: subproject
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: username
+          in: query
+          required: false
+          schema:
+            type: string
       responses:
         200:
           description: All Samples
@@ -597,22 +638,43 @@ paths:
       summary: List Samples
       tags:
         - Sample
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                disease_code:
-                  type: string
-                formal_name:
-                  type: string
-                pi_name:
-                  type: string
-                lab_name:
-                  type: string
-                sample_type:
-                  $ref: '#/components/schemas/SampleType'
+      parameters:
+        - name: disease_code
+          description: A short code to denote the disease that applies to the Sample
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: formal_name
+          description: The name given to the Sample at registration
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: pi_name
+          description:
+            A secondary identifier for the Sample, usually the name assigned to
+            it by its registering lab or the name of the cell-line from which
+            the Sample originates
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: lab_name
+          description:
+            The long-form name given to the Sample at registration, which follows
+            the format {formal_name}-{pi_name}
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: sample_type
+          description:
+            A single letter used to show which type the Sample falls into. Examples
+            include D (Diagnosis) and G (Germline)
+          in: query
+          schema:
+            $ref: '#/components/schemas/SampleType'
       responses:
         200:
           description: All Samples
@@ -684,17 +746,19 @@ paths:
       summary: List Subjects
       tags:
         - Subject
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                genome_id:
-                  example: 123456
-                  type: integer
+      parameters:
+        - name: name
+          description: The name given to the Subject when it was created
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: organism_id
+          description: The id for the Organism the Suject is
+          in: query
+          required: false
+          schema:
+            type: string
       responses:
         200:
           description: List Subjects
