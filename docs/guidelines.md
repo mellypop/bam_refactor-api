@@ -3,7 +3,7 @@
 The following is the current working design rules for this API design. As even
 these rules are currently in development, nothing on this page should be
 considered set in stone, though the rules herein should align to what is in
-the [API documentation](/documentation).
+the [API documentation](/bam_refactor-api/documentation).
 
 ## Small, Atomic Actions
 
