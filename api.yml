@@ -1,0 +1,1079 @@
+openapi: 3.0.0
+info:
+  version: 0.1.0
+  title: RAPTR Order API
+  description:
+    The endpoints listed in this API have been created to facilitate the new launcher
+servers:
+  - url: https://localhost/raptr/api/stjude/v2
+    description: Development
+tags:
+  - name: Bam
+  - name: Bam Pair
+  - name: Order
+  - name: Project
+  - name: Sample
+  - name: Subject
+  - name: Suite
+  - name: Target
+paths:
+  /bam:
+    post:
+      summary: Create Bam
+      tags:
+        - Bam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                project_id:
+                  description: The id for the Project the Bam should be created for
+                  type: integer
+                  example: 123456
+                sample_id:
+                  description: The id for the Sample the Bam should be created for
+                  type: integer
+                  example: 123456
+                target_id:
+                  description: The id for the Target that applies to the Bam
+                  example: 123456
+                  type: integer
+                qualifier:
+                  description:
+                    A string used to separate a Bam from other Bams that share
+                    the same sample, target, and project
+                  example: '-'
+                  type: string
+              required:
+                - project_id
+                - sample_id
+                - target_id
+      responses:
+        201:
+          description: Bam created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Bam'
+  /bam/{bam_id}:
+    get:
+      summary: Show Bam
+      tags:
+        - Bam
+      responses:
+        200:
+          description: Show Bam
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Bam'
+  /bam/{bam_id}/status:
+    post:
+      summary: Update Bam Status
+      tags:
+        - Bam
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  enum: ['Normal', 'Pending', 'QCFailed', 'Waiting']
+      responses:
+        200:
+          description: Status Updated Successfully
+  /bams:
+    get:
+      summary: List Bams
+      description:
+        List all Bams or optionally filter Bams based on project, sample, or
+        target
+      tags:
+        - Bam
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                project_id:
+                  description: The id for the Project the Bam should be created for
+                  type: integer
+                  example: 123456
+                sample_id:
+                  description: The id for the Sample the Bam should be created for
+                  type: integer
+                  example: 123456
+                target_id:
+                  description: The id for the Target that applies to the Bam
+                  example: 123456
+                  type: integer
+      responses:
+        200:
+          description: Bam created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Bam'
+  #/bam/{bam_id}:
+  /bam_pair:
+    post:
+      summary: Create BamPair
+      tags:
+        - Bam Pair
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                case_bam_id:
+                  example: 123456
+                  type: integer
+                control_bam_id:
+                  example: 123456
+                  type: integer
+                notes:
+                  type: string
+                qualifier:
+                  example: '-'
+                  type: string
+      responses:
+        200:
+          description: Bam Pair Created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/BamPair'
+  /bam_pair/{bam_pair_id}:
+    get:
+      summary: Show Bam Pair
+      tags:
+        - Bam Pair
+      responses:
+        200:
+          description: Show BamPair
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/BamPair'
+  /bam_pair/{bam_pair_id}/status:
+    post:
+      summary: Update Bam Pair Status
+      tags:
+        - Bam Pair
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  $ref: '#/components/schemas/BamPairStatus'
+      responses:
+        200:
+          description: Update Bam PairStatus
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/BamPair'
+  /bam_pairs:
+    get:
+      summary: List Bam Pairs
+      description:
+        List all available BamPairs or optionally filter by one of the values shown
+        in the request body below.
+      tags:
+        - Bam Pair
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                project_id:
+                  example: 123456
+                  type: integer
+                sample_id:
+                  example: 123456
+                  type: integer
+                target_id:
+                  example: 123456
+                  type: integer
+                qualifier:
+                  example: '-'
+                  type: string
+      responses:
+        200:
+          description: List Bams
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - $ref: '#/components/schemas/Paginated'
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BamPair'
+  /order:
+    post:
+      summary: Create Order
+      description: Create a new Order
+      tags:
+        - Order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                project_id:
+                  description: The primary key for the Project the new Order will be associated with
+                  example: 123456
+                  type: integer
+                suite_id:
+                  example: 123456
+                  type: integer
+                target_name:
+                  type: string
+                  description: The name of the Target for the new Order
+                  example: WHOLE_GENOME
+                notes:
+                  type: string
+              required:
+                - project_id
+                - suite_id
+                - target_name
+      responses:
+        201:
+          description: The newly created Order
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Order'
+  /order/{order_id}:
+    parameters:
+      - name: order_id
+        description:
+          A unique numeric identifier for an Order
+        example: 123456
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Show Order
+      tags:
+        - Order
+      responses:
+        200:
+          description: Show Order
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Order'
+  /order/{order_id}/bam:
+    post:
+      summary: Add Bam to Order
+      tags:
+        - Order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bam_id:
+                  example: 123456
+                  type: integer
+              required:
+                - bam_id
+      responses:
+        201:
+          description: Bam Added
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    allOf:
+                      - $ref: '#/components/schemas/Order'
+                    properties:
+                      bams:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Bam'
+  /order/{order_id}/status:
+    post:
+      summary: Update Order Status
+      tags:
+        - Order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  description: The new status to apply to the Order
+                  $ref: "#/components/schemas/OrderStatus"
+              required:
+                - status
+      responses:
+        200:
+          description: Order Status Updated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Order'
+  /orders:
+    get:
+      summary: List Orders
+      tags:
+        - Order
+      responses:
+        200:
+          description: All Orders
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - $ref: '#/components/schemas/Paginated'
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Order'
+  /project:
+    post:
+      summary: Create Project
+      tags:
+        - Project
+      responses:
+        201:
+          description: Project created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Project'
+  /project/{project_id}:
+    get:
+      summary: Show Project
+      tags:
+        - Project
+      responses:
+        200:
+          description: Show Project
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Project'
+  /projects:
+    get:
+      summary: List Projects
+      description:
+        List all samples or optionally filter by name, subproject, and/or the
+        username of the project lead.
+      tags:
+        - Project
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                subproject:
+                  type: string
+                username:
+                  type: string
+      responses:
+        200:
+          description: All Samples
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - $ref: '#/components/schemas/Paginated'
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Project'
+  /sample:
+    post:
+      summary: Create Sample
+      tags:
+        - Sample
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                subject_id:
+                  example: 123456
+                disease_code:
+                  type: string
+                pi_name:
+                  type: string
+                sample_type:
+                  $ref: '#/components/schemas/SampleType'
+              required:
+                - subject_id
+                - disease_code
+                - pi_name
+                - sample_type
+      responses:
+        201:
+          description: Sample Created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Sample'
+  /sample/{sample_id}:
+    parameters:
+      - name: sample_id
+        description: A unique numeric identifier for a Sample
+        example: 123456
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Show Sample
+      tags:
+        - Sample
+      responses:
+        200:
+          description: Show Sample
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Sample'
+    patch:
+      summary: Update Sample
+      tags:
+        - Sample
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                subject_id:
+                  example: 123456
+                  type: integer
+                disease_code:
+                  description: A short code used to denote a particular disease
+                  type: string
+                pi_name:
+                  type: string
+                sample_type:
+                  $ref: '#/components/schemas/SampleType'
+      responses:
+        200:
+          description: Sample Updated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Sample'
+  /sample/{sample_id}/synonym:
+    parameters:
+      - name: sample_id
+        description: A unique numeric identifier for a Sample
+        example: 123456
+        in: path
+        required: true
+        schema:
+          type: integer
+    post:
+      summary: Add Sample Synonym
+      tags:
+        - Sample
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                source:
+                  description: The source or type of synonym being added
+                  example: SJUID
+                  type: string
+                synonym:
+                  description: The value of the synonym to be added
+                  type: string
+              required:
+                - source
+                - synonym
+      responses:
+        201:
+          description: Sample Synonym Added
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Sample'
+  /samples:
+    get:
+      summary: List Samples
+      tags:
+        - Sample
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                disease_code:
+                  type: string
+                formal_name:
+                  type: string
+                pi_name:
+                  type: string
+                lab_name:
+                  type: string
+                sample_type:
+                  $ref: '#/components/schemas/SampleType'
+      responses:
+        200:
+          description: All Samples
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - $ref: '#/components/schemas/Paginated'
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Sample'
+  /subject:
+    post:
+      summary: Create Subject
+      tags:
+        - Subject
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                organism_id:
+                  example: 123456
+                  type: integer
+              required:
+                - organism_id
+      responses:
+        201:
+          description: Subject created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Subject'
+  /subject/{subject_id}:
+    get:
+      summary: Show Subject
+      tags:
+        - Subject
+      parameters:
+        - name: subject_id
+          description: A unique numeric identifier for a Subject
+          example: 123456
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Show Subject
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Subject'
+  /subjects:
+    get:
+      summary: List Subjects
+      tags:
+        - Subject
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                genome_id:
+                  example: 123456
+                  type: integer
+      responses:
+        200:
+          description: List Subjects
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - $ref: '#/components/schemas/Paginated'
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Subject'
+  /suites:
+    get:
+      summary: List Suites
+      tags:
+        - Suite
+      responses:
+        200:
+          description: All Suites
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - $ref: '#/components/schemas/Paginated'
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Suite'
+  /targets:
+    get:
+      summary: List Targets
+      tags:
+        - Target
+      responses:
+        200:
+          description: An array of all available targets
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - $ref: '#/components/schemas/Paginated'
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Target'
+components:
+  requestBodies:
+    Sample:
+      description: The standard request body for creating or updating a Sample
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              subject_id:
+                example: 123456
+                type: integer
+              disease_code:
+                description: A short code used to denote a particular disease
+                type: string
+              pi_name:
+                type: string
+              sample_type:
+                $ref: '#/components/schemas/SampleType'
+  schemas:
+    AnlsType:
+      type: object
+      properties:
+        anls_type_id:
+          description: The primary key of the AnlsType record
+          example: 123456
+          type: integer
+        bam_pair_role:
+          description: Which of the two Bams in a Bam Pairthe AnlsType is intended for
+          example: case
+          type: string
+        blt_item_type:
+          description: The type of BLT item (bam, bam_pair, etc) the AnlsType runs on
+          example: bam
+          type: string
+        description:
+          type: string
+        is_combable:
+          description: Whether or not the AnlsType should be combed
+          type: boolean
+        is_mapper:
+          description: Whether or not the AnlsType is a mapping AnlsType
+          type: boolean
+        name:
+          type: string
+        ordinal:
+          description: A numeric value used mainly to order AnlsTypes in output
+          example: 1
+          type: integer
+    Bam:
+      type: object
+      properties:
+        bam_id:
+          example: 123456
+          type: integer
+        anls_type_id:
+          example: 123456
+          type: integer
+        gedi_source_id:
+          example: 123456
+          type: integer
+        genome_id:
+          example: 123456
+          type: integer
+        sample_target_project_id:
+          example: 123456
+          type: integer
+        qualifier:
+          example: '-'
+          type: string
+        notes:
+          example: Some note
+          type: string
+        status:
+          example: Waiting
+          type: string
+    BamPair:
+      type: object
+      properties:
+        bam_pair_id:
+          description: The primary key used to uniquely identify the BamPair
+          example: 123456
+          type: integer
+        case_bam_id:
+          description: The id for the case Bam
+          example: 123456
+          type: integer
+        control_bam_id:
+          description: The id for the control Bam
+          example: 123456
+          type: integer
+        notes:
+          type: string
+        qualifier:
+          description: A string value used to allow for multiple BamPairs, usually '-'
+          example: '-'
+          type: string
+        status:
+          $ref: '#/components/schemas/BamPairStatus'
+    BamPairStatus:
+      type: string
+      enum:
+        - 'Normal'
+        - 'Obsolete'
+        - 'Special'
+    Order:
+      type: object
+      properties:
+        order_id:
+          example: 123456
+          type: integer
+        project_id:
+          example: 123456
+          type: integer
+        suite_id:
+          example: 123456
+          type: integer
+        analyst_assigned_to:
+          example: username
+          type: string
+        germline_reviewer_assigned_to:
+          type: string
+        notes:
+          type: string
+        ord_code:
+          description: A secondary identifier for Order records
+          example: 123456
+          type: integer
+        pathologist_assigned_to:
+          type: string
+        source:
+          type: string
+        source_type:
+          type: string
+        status:
+          $ref: '#/components/schemas/OrderStatus'
+        username:
+          type: string
+        suite:
+          $ref: '#/components/schemas/Suite'
+    OrderStatus:
+      type: string
+      example: normal
+      enum: 
+        - 'canceled'
+        - 'complete'
+        - 'draft'
+        - 'hold'
+        - 'normal'
+    Project:
+      type: object
+      properties:
+        project_id:
+          description: The primary key of the Project record
+          example: 123456
+          type: integer
+        default_tartan_id:
+          description: A foreign key indicating which TARTan the project exists in
+          example: 1
+          type: integer
+        description:
+          type: string
+        name:
+          description: The primary name of a project, often the name of a PI or a large project
+          type: string
+        subproject:
+          description: A secondary name for a project, differentiating it from projects with the same name
+          type: string
+        notes:
+          type: string
+        username:
+          description: The username of the primary investigator listed on the project
+          type: string
+    Sample:
+      type: object
+      properties:
+        sample_id:
+          description: THe primary key of the Sample record
+          example: 123456
+          type: integer
+        subject_id:
+          description: A foreign key pointing to the Sample's Subject
+          example: 123456
+          type: integer
+        disease_code:
+          description: A short code indicating the disease for the Sample
+          example: NORM
+          type: string
+        formal_name:
+          description: The name of the Sample
+          example: SJNORM012345_D1
+          type: string
+        pi_name:
+          description: A secondary identifier used for the Sample
+          example: sample1
+          type: string
+        lab_name:
+          description: The long-form Sample name following the form {formal_name}-{lab_name}
+          example: SJNORM012345_D1-sample1
+          type: string
+        replaced_by:
+          description: If not null, the sample_id of the Sample that has replaced this Sample
+          example: 123456
+          type: integer
+        sample_index:
+          description: An index value incremented to differentiate between Samples of the same type
+          example: 1
+          type: integer
+        sample_type:
+          $ref: '#/components/schemas/SampleType'
+    SampleType:
+      description: A single character code indicating the type of sample
+      type: string
+      enum:
+        - C
+        - D
+        - G
+        - O
+        - P
+        - R
+        - X
+    Subject:
+      type: object
+      properties:
+        subject_id:
+          description: The primary key that uniquely identifies the Subject
+          example: 123456
+          type: integer
+        organism_id:
+          description: The id for the Organism the Subject is
+          example: 123456
+          type: integer
+        name:
+          description: The name of the Subject
+          type: string
+        synonyms:
+          type: string
+    Suite:
+      type: object
+      properties:
+        suite_id:
+          description: The primary key of the Suite record
+          example: 123456
+          type: integer
+        genome_id:
+          example: 123456
+          type: integer
+        description:
+          description: A description of the suite and its purpose
+          type: string
+        name:
+          description: The name assigned to the suite
+          type: string
+        is_default:
+          description: A flag indicating whether or not the Suite is a default suite
+          type: boolean
+    Target:
+      type: object
+      properties:
+        target_id:
+          description: The primary key of the Target record
+          example: 123456
+          type: integer
+        analyte:
+          example: DNA
+          type: string
+        description:
+          example: Whole genome sequencing
+          type: string
+        name:
+          description: The name of the Target
+          example: WHOLE_GENOME
+          type: string
+        seq_type:
+          description: The sequencing type for the Target
+          example: WHOLEGENOME
+          type: string
+    Success:
+      type: object
+      properties:
+        data:
+          type: object
+    Paginated:
+      type: object
+      properties:
+        links:
+          type: object
+          properties:
+            first:
+              type: string
+              description: A uri for the first page of results
+            last:
+              type: string
+              description: A uri for the last page of results
+            prev:
+              type: string
+              description: A uri for the previous page of results
+              example: null
+            next:
+              type: string
+              description: A uri for the next page of results
+        meta:
+          type: object
+          properties:
+            current_page:
+              type: integer
+              description: The current page number of results
+              example: 1
+            from:
+              type: integer
+              example: 1
+              description: The index of the first entry of the current page
+            last_page:
+              type: integer
+              example: 100
+              description: The number of pages of results
+            path:
+              type: string
+              description: The uri used to get this page of results
+            per_page:
+              type: integer
+              description: The number of results per page
+            to:
+              type: integer
+              description: The index of the last result of the current page
+              example: 15
+            total:
+              type: integer
+              description: The total number of results available for the request
+              example: 1500
