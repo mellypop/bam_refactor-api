@@ -9,7 +9,7 @@ servers:
     description: Development
 tags:
   - name: Bam
-  - name: BamPair
+  - name: Bam Pair
   - name: Order
   - name: Project
   - name: Sample
@@ -138,7 +138,7 @@ paths:
     post:
       summary: Create BamPair
       tags:
-        - BamPair
+        - Bam Pair
       requestBody:
         content:
           application/json:
@@ -158,7 +158,7 @@ paths:
                   type: string
       responses:
         200:
-          description: BamPair Created
+          description: Bam Pair Created
           content:
             application/json:
               schema:
@@ -169,9 +169,9 @@ paths:
                     $ref: '#/components/schemas/BamPair'
   /bam_pair/{bam_pair_id}:
     get:
-      summary: Show BamPair
+      summary: Show Bam Pair
       tags:
-        - BamPair
+        - Bam Pair
       responses:
         200:
           description: Show BamPair
@@ -185,9 +185,9 @@ paths:
                     $ref: '#/components/schemas/BamPair'
   /bam_pair/{bam_pair_id}/status:
     post:
-      summary: Update BamPair Status
+      summary: Update Bam Pair Status
       tags:
-        - BamPair
+        - Bam Pair
       requestBody:
         content:
           application/json:
@@ -198,7 +198,7 @@ paths:
                   $ref: '#/components/schemas/BamPairStatus'
       responses:
         200:
-          description: Update BamPair Status
+          description: Update Bam PairStatus
           content:
             application/json:
               schema:
@@ -209,12 +209,12 @@ paths:
                     $ref: '#/components/schemas/BamPair'
   /bam_pairs:
     get:
-      summary: List BamPairs
+      summary: List Bam Pairs
       description:
         List all available BamPairs or optionally filter by one of the values shown
         in the request body below.
       tags:
-        - BamPair
+        - Bam Pair
       requestBody:
         content:
           application/json:
@@ -775,7 +775,7 @@ components:
           example: 123456
           type: integer
         bam_pair_role:
-          description: Which of the two Bams in a BamPair the AnlsType is intended for
+          description: Which of the two Bams in a Bam Pairthe AnlsType is intended for
           example: case
           type: string
         blt_item_type:
