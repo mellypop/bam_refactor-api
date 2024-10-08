@@ -135,12 +135,13 @@ paths:
             type: string
       responses:
         200:
-          description: Bam created
+          description: List Bams
           content:
             application/json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/Success'
+                  - $ref: '#/components/schemas/Paginated'
                 properties:
                   data:
                     type: array
