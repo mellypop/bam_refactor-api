@@ -29,18 +29,18 @@ paths:
             schema:
               type: object
               properties:
-                project_id:
-                  description: The id for the Project the Bam should be created for
-                  type: integer
-                  example: 123456
-                sample_id:
-                  description: The id for the Sample the Bam should be created for
-                  type: integer
-                  example: 123456
-                target_id:
-                  description: The id for the Target that applies to the Bam
-                  example: 123456
-                  type: integer
+                project_name:
+                  description: The name of the Project the Bam will be created for
+                  type: string
+                subproject:
+                  description: The subproject of the Project the Bam will be created for
+                  type: string
+                sample_name:
+                  description: The name of the Sample the Bam will be created for
+                  type: string
+                target_name:
+                  description: The name of the Target that applies to the Bam
+                  type: string
                 qualifier:
                   description:
                     A string used to separate a Bam from other Bams that share
@@ -48,9 +48,10 @@ paths:
                   example: '-'
                   type: string
               required:
-                - project_id
-                - sample_id
-                - target_id
+                - project_name
+                - subproject
+                - sample_name
+                - target_name
       responses:
         201:
           description: Bam created
@@ -103,27 +104,30 @@ paths:
       tags:
         - Bam
       parameters:
-        - name: project_id
-          description: The id for the Project the Bam was created for
-          example: 123456
+        - name: project_name
+          description: The name of the Project the Bam is associated with
           in: query
           required: false
           schema:
-            type: integer
-        - name: sample_id
-          description: The id for the Sample the Bam was created for
-          example: 123456
+            type: string
+        - name: subproject
+          description: The subproject of the Project the Bam is associated with
           in: query
           required: false
           schema:
-            type: integer
+            type: string
+        - name: sample_name
+          description: The name of the Sample the Bam is associated with
+          in: query
+          required: false
+          schema:
+            type: string
         - name: target_id
-          description: The id for the Target the Bam was created for
-          example: 123456
+          description: The name of the Target the Bam is associated with
           in: query
           required: false
           schema:
-            type: integer
+            type: string
         - name: qualifier
           description:
             The string used to separate this Bam from others sharing its sample,
@@ -280,13 +284,15 @@ paths:
             schema:
               type: object
               properties:
-                project_id:
-                  description: The primary key for the Project the new Order will be associated with
-                  example: 123456
-                  type: integer
-                suite_id:
-                  example: 123456
-                  type: integer
+                project_name:
+                  description: The name of the Project for which the Order will be created
+                  type: string
+                subproject:
+                  description: The subproject of the Project for which the Order will be created
+                  type: string
+                suite_name:
+                  description: The name of the Suite that will be run for this Order
+                  type: string
                 target_name:
                   type: string
                   description: The name of the Target for the new Order
@@ -294,8 +300,9 @@ paths:
                 notes:
                   type: string
               required:
-                - project_id
-                - suite_id
+                - project_name
+                - subproject
+                - suite_name
                 - target_name
       responses:
         201:
@@ -400,18 +407,21 @@ paths:
       tags:
         - Order
       parameters:
-        - name: project_id
-          example: 123456
+        - name: project_name
           in: query
           required: false
           schema:
-            type: integer
-        - name: suite_id
-          example: 123456
+            type: string
+        - name: subproject
           in: query
           required: false
           schema:
-            type: integer
+            type: string
+        - name: suite_name
+          in: query
+          required: false
+          schema:
+            type: string
         - name: username
           in: query
           required: false
@@ -513,8 +523,8 @@ paths:
             schema:
               type: object
               properties:
-                subject_id:
-                  example: 123456
+                subject_name:
+                  type: string
                 disease_code:
                   type: string
                 pi_name:
@@ -537,15 +547,14 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Sample'
-  /sample/{sample_id}:
+  /sample/{sample_name}:
     parameters:
-      - name: sample_id
-        description: A unique numeric identifier for a Sample
-        example: 123456
+      - name: sample_name
+        description: The name of the Sample being requested
         in: path
         required: true
         schema:
-          type: integer
+          type: string
     get:
       summary: Show Sample
       tags:
@@ -572,9 +581,8 @@ paths:
             schema:
               type: object
               properties:
-                subject_id:
-                  example: 123456
-                  type: integer
+                subject_name:
+                  type: string
                 disease_code:
                   description: A short code used to denote a particular disease
                   type: string
@@ -593,15 +601,14 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Sample'
-  /sample/{sample_id}/synonym:
+  /sample/{sample_name}/synonym:
     parameters:
       - name: sample_id
-        description: A unique numeric identifier for a Sample
-        example: 123456
+        description: The name of the Sample the request is for
         in: path
         required: true
         schema:
-          type: integer
+          type: string
     post:
       summary: Add Sample Synonym
       tags:
@@ -676,6 +683,11 @@ paths:
           in: query
           schema:
             $ref: '#/components/schemas/SampleType'
+        - name: subject_name
+          description: The name of the Subject the Sample was derived from
+          in: query
+          schema:
+            type: string
       responses:
         200:
           description: All Samples
@@ -702,9 +714,8 @@ paths:
             schema:
               type: object
               properties:
-                organism_id:
-                  example: 123456
-                  type: integer
+                organism_name:
+                  type: string
               required:
                 - organism_id
       responses:
@@ -718,19 +729,18 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Subject'
-  /subject/{subject_id}:
+  /subject/{subject_name}:
+    parameters:
+      - name: subject_name
+        description: The name of the Subject the request is for
+        in: path
+        required: true
+        schema:
+          type: string
     get:
       summary: Show Subject
       tags:
         - Subject
-      parameters:
-        - name: subject_id
-          description: A unique numeric identifier for a Subject
-          example: 123456
-          in: path
-          required: true
-          schema:
-            type: integer
       responses:
         200:
           description: Show Subject
@@ -754,8 +764,8 @@ paths:
           required: false
           schema:
             type: string
-        - name: organism_id
-          description: The id for the Organism the Suject is
+        - name: organism_name
+          description: The name for the type of Organism the Suject is
           in: query
           required: false
           schema:
