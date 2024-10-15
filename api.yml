@@ -18,6 +18,61 @@ tags:
   - name: Target
 paths:
   /bam:
+    get:
+      summary: List Bams
+      description:
+        List all Bams or optionally filter Bams based on project, sample, or
+        target
+      tags:
+        - Bam
+      parameters:
+        - name: project_name
+          description: The name of the Project the Bam is associated with
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: subproject
+          description: The subproject of the Project the Bam is associated with
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: sample_name
+          description: The name of the Sample the Bam is associated with
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: target_id
+          description: The name of the Target the Bam is associated with
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: qualifier
+          description:
+            The string used to separate this Bam from others sharing its sample,
+            target, and project.
+          example: '-'
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: List Bams
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - $ref: '#/components/schemas/Paginated'
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Bam'
     post:
       summary: Create Bam
       tags:
@@ -29,18 +84,18 @@ paths:
             schema:
               type: object
               properties:
-                project_id:
-                  description: The id for the Project the Bam should be created for
-                  type: integer
-                  example: 123456
-                sample_id:
-                  description: The id for the Sample the Bam should be created for
-                  type: integer
-                  example: 123456
-                target_id:
-                  description: The id for the Target that applies to the Bam
-                  example: 123456
-                  type: integer
+                project_name:
+                  description: The name of the Project the Bam will be created for
+                  type: string
+                subproject:
+                  description: The subproject of the Project the Bam will be created for
+                  type: string
+                sample_name:
+                  description: The name of the Sample the Bam will be created for
+                  type: string
+                target_name:
+                  description: The name of the Target that applies to the Bam
+                  type: string
                 qualifier:
                   description:
                     A string used to separate a Bam from other Bams that share
@@ -48,9 +103,10 @@ paths:
                   example: '-'
                   type: string
               required:
-                - project_id
-                - sample_id
-                - target_id
+                - project_name
+                - subproject
+                - sample_name
+                - target_name
       responses:
         201:
           description: Bam created
@@ -94,31 +150,24 @@ paths:
       responses:
         200:
           description: Status Updated Successfully
-  /bams:
+  /bam_pair:
     get:
-      summary: List Bams
+      summary: List Bam Pairs
       description:
-        List all Bams or optionally filter Bams based on project, sample, or
-        target
+        List all available BamPairs or optionally filter by one of the values shown
+        in the request body below.
       tags:
-        - Bam
+        - Bam Pair
       parameters:
-        - name: project_id
-          description: The id for the Project the Bam was created for
+        - name: case_bam_id
+          description: The id for the case Bam of the Bam Pair
           example: 123456
           in: query
           required: false
           schema:
             type: integer
-        - name: sample_id
-          description: The id for the Sample the Bam was created for
-          example: 123456
-          in: query
-          required: false
-          schema:
-            type: integer
-        - name: target_id
-          description: The id for the Target the Bam was created for
+        - name: control_bam_id
+          description: The id for the control Bam of the Bam Pair
           example: 123456
           in: query
           required: false
@@ -126,8 +175,8 @@ paths:
             type: integer
         - name: qualifier
           description:
-            The string used to separate this Bam from others sharing its sample,
-            target, and project.
+            The string used to separate this Bam Pair from others sharing its
+            case and control Bams
           example: '-'
           in: query
           required: false
@@ -146,9 +195,7 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Bam'
-  #/bam/{bam_id}:
-  /bam_pair:
+                      $ref: '#/components/schemas/BamPair'
     post:
       summary: Create BamPair
       tags:
@@ -221,41 +268,35 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/BamPair'
-  /bam_pairs:
+  /order:
     get:
-      summary: List Bam Pairs
-      description:
-        List all available BamPairs or optionally filter by one of the values shown
-        in the request body below.
+      summary: List Orders
       tags:
-        - Bam Pair
+        - Order
       parameters:
-        - name: case_bam_id
-          description: The id for the case Bam of the Bam Pair
-          example: 123456
+        - name: project_name
           in: query
           required: false
           schema:
-            type: integer
-        - name: control_bam_id
-          description: The id for the control Bam of the Bam Pair
-          example: 123456
+            type: string
+        - name: subproject
           in: query
           required: false
           schema:
-            type: integer
-        - name: qualifier
-          description:
-            The string used to separate this Bam Pair from others sharing its
-            case and control Bams
-          example: '-'
+            type: string
+        - name: suite_name
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: username
           in: query
           required: false
           schema:
             type: string
       responses:
         200:
-          description: List Bams
+          description: All Orders
           content:
             application/json:
               schema:
@@ -266,8 +307,7 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/BamPair'
-  /order:
+                      $ref: '#/components/schemas/Order'
     post:
       summary: Create Order
       description: Create a new Order
@@ -280,13 +320,15 @@ paths:
             schema:
               type: object
               properties:
-                project_id:
-                  description: The primary key for the Project the new Order will be associated with
-                  example: 123456
-                  type: integer
-                suite_id:
-                  example: 123456
-                  type: integer
+                project_name:
+                  description: The name of the Project for which the Order will be created
+                  type: string
+                subproject:
+                  description: The subproject of the Project for which the Order will be created
+                  type: string
+                suite_name:
+                  description: The name of the Suite that will be run for this Order
+                  type: string
                 target_name:
                   type: string
                   description: The name of the Target for the new Order
@@ -294,8 +336,9 @@ paths:
                 notes:
                   type: string
               required:
-                - project_id
-                - suite_id
+                - project_name
+                - subproject
+                - suite_name
                 - target_name
       responses:
         201:
@@ -394,76 +437,7 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Order'
-  /orders:
-    get:
-      summary: List Orders
-      tags:
-        - Order
-      parameters:
-        - name: project_id
-          example: 123456
-          in: query
-          required: false
-          schema:
-            type: integer
-        - name: suite_id
-          example: 123456
-          in: query
-          required: false
-          schema:
-            type: integer
-        - name: username
-          in: query
-          required: false
-          schema:
-            type: string
-      responses:
-        200:
-          description: All Orders
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/Success'
-                  - $ref: '#/components/schemas/Paginated'
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Order'
   /project:
-    post:
-      summary: Create Project
-      tags:
-        - Project
-      responses:
-        201:
-          description: Project created
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/Success'
-                properties:
-                  data:
-                    $ref: '#/components/schemas/Project'
-  /project/{project_id}:
-    get:
-      summary: Show Project
-      tags:
-        - Project
-      responses:
-        200:
-          description: Show Project
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/Success'
-                properties:
-                  data:
-                    $ref: '#/components/schemas/Project'
-  /projects:
     get:
       summary: List Projects
       description:
@@ -501,34 +475,13 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Project'
-  /sample:
     post:
-      summary: Create Sample
+      summary: Create Project
       tags:
-        - Sample
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                subject_id:
-                  example: 123456
-                disease_code:
-                  type: string
-                pi_name:
-                  type: string
-                sample_type:
-                  $ref: '#/components/schemas/SampleType'
-              required:
-                - subject_id
-                - disease_code
-                - pi_name
-                - sample_type
+        - Project
       responses:
         201:
-          description: Sample Created
+          description: Project created
           content:
             application/json:
               schema:
@@ -536,23 +489,15 @@ paths:
                   - $ref: '#/components/schemas/Success'
                 properties:
                   data:
-                    $ref: '#/components/schemas/Sample'
-  /sample/{sample_id}:
-    parameters:
-      - name: sample_id
-        description: A unique numeric identifier for a Sample
-        example: 123456
-        in: path
-        required: true
-        schema:
-          type: integer
+                    $ref: '#/components/schemas/Project'
+  /project/{project_id}:
     get:
-      summary: Show Sample
+      summary: Show Project
       tags:
-        - Sample
+        - Project
       responses:
         200:
-          description: Show Sample
+          description: Show Project
           content:
             application/json:
               schema:
@@ -560,81 +505,8 @@ paths:
                   - $ref: '#/components/schemas/Success'
                 properties:
                   data:
-                    $ref: '#/components/schemas/Sample'
-    patch:
-      summary: Update Sample
-      tags:
-        - Sample
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                subject_id:
-                  example: 123456
-                  type: integer
-                disease_code:
-                  description: A short code used to denote a particular disease
-                  type: string
-                pi_name:
-                  type: string
-                sample_type:
-                  $ref: '#/components/schemas/SampleType'
-      responses:
-        200:
-          description: Sample Updated
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/Success'
-                properties:
-                  data:
-                    $ref: '#/components/schemas/Sample'
-  /sample/{sample_id}/synonym:
-    parameters:
-      - name: sample_id
-        description: A unique numeric identifier for a Sample
-        example: 123456
-        in: path
-        required: true
-        schema:
-          type: integer
-    post:
-      summary: Add Sample Synonym
-      tags:
-        - Sample
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                source:
-                  description: The source or type of synonym being added
-                  example: SJUID
-                  type: string
-                synonym:
-                  description: The value of the synonym to be added
-                  type: string
-              required:
-                - source
-                - synonym
-      responses:
-        201:
-          description: Sample Synonym Added
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/Success'
-                properties:
-                  data:
-                    $ref: '#/components/schemas/Sample'
-  /samples:
+                    $ref: '#/components/schemas/Project'
+  /sample:
     get:
       summary: List Samples
       tags:
@@ -676,6 +548,11 @@ paths:
           in: query
           schema:
             $ref: '#/components/schemas/SampleType'
+        - name: subject_name
+          description: The name of the Subject the Sample was derived from
+          in: query
+          schema:
+            type: string
       responses:
         200:
           description: All Samples
@@ -690,11 +567,10 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Sample'
-  /subject:
     post:
-      summary: Create Subject
+      summary: Create Sample
       tags:
-        - Subject
+        - Sample
       requestBody:
         required: true
         content:
@@ -702,14 +578,22 @@ paths:
             schema:
               type: object
               properties:
-                organism_id:
-                  example: 123456
-                  type: integer
+                subject_name:
+                  type: string
+                disease_code:
+                  type: string
+                pi_name:
+                  type: string
+                sample_type:
+                  $ref: '#/components/schemas/SampleType'
               required:
-                - organism_id
+                - subject_id
+                - disease_code
+                - pi_name
+                - sample_type
       responses:
         201:
-          description: Subject created
+          description: Sample Created
           content:
             application/json:
               schema:
@@ -717,23 +601,22 @@ paths:
                   - $ref: '#/components/schemas/Success'
                 properties:
                   data:
-                    $ref: '#/components/schemas/Subject'
-  /subject/{subject_id}:
+                    $ref: '#/components/schemas/Sample'
+  /sample/{sample_name}:
+    parameters:
+      - name: sample_name
+        description: The name of the Sample being requested
+        in: path
+        required: true
+        schema:
+          type: string
     get:
-      summary: Show Subject
+      summary: Show Sample
       tags:
-        - Subject
-      parameters:
-        - name: subject_id
-          description: A unique numeric identifier for a Subject
-          example: 123456
-          in: path
-          required: true
-          schema:
-            type: integer
+        - Sample
       responses:
         200:
-          description: Show Subject
+          description: Show Sample
           content:
             application/json:
               schema:
@@ -741,8 +624,79 @@ paths:
                   - $ref: '#/components/schemas/Success'
                 properties:
                   data:
-                    $ref: '#/components/schemas/Subject'
-  /subjects:
+                    $ref: '#/components/schemas/Sample'
+    patch:
+      summary: Update Sample
+      tags:
+        - Sample
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                subject_name:
+                  type: string
+                disease_code:
+                  description: A short code used to denote a particular disease
+                  type: string
+                pi_name:
+                  type: string
+                sample_type:
+                  $ref: '#/components/schemas/SampleType'
+      responses:
+        200:
+          description: Sample Updated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Sample'
+  /sample/{sample_name}/synonym:
+    parameters:
+      - name: sample_id
+        description: The name of the Sample the request is for
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: Add Sample Synonym
+      tags:
+        - Sample
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                source:
+                  description: The source or type of synonym being added
+                  example: SJUID
+                  type: string
+                synonym:
+                  description: The value of the synonym to be added
+                  type: string
+              required:
+                - source
+                - synonym
+      responses:
+        201:
+          description: Sample Synonym Added
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Sample'
+  /subject:
     get:
       summary: List Subjects
       tags:
@@ -754,8 +708,8 @@ paths:
           required: false
           schema:
             type: string
-        - name: organism_id
-          description: The id for the Organism the Suject is
+        - name: organism_name
+          description: The name for the type of Organism the Suject is
           in: query
           required: false
           schema:
@@ -774,7 +728,56 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Subject'
-  /suites:
+    post:
+      summary: Create Subject
+      tags:
+        - Subject
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                organism_name:
+                  type: string
+              required:
+                - organism_id
+      responses:
+        201:
+          description: Subject created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Subject'
+  /subject/{subject_name}:
+    parameters:
+      - name: subject_name
+        description: The name of the Subject the request is for
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Show Subject
+      tags:
+        - Subject
+      responses:
+        200:
+          description: Show Subject
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Subject'
+  /suite:
     get:
       summary: List Suites
       tags:
@@ -793,7 +796,7 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Suite'
-  /targets:
+  /target:
     get:
       summary: List Targets
       tags:
