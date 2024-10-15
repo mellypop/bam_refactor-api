@@ -20,18 +20,19 @@ or requested.
 - In the case of model names made up of more than one word (e.g., disease code),
   the names of these models must be included in snake case (e.g., disease_code)
   and not in camel case (e.g., diseaseCode) or kebab case (e.g., disease-code).
-- Path names must be singular if they are expected to create, delete, update, or
-  return a single record. For example, an endpoint to create a Subject would be
-  `/subject`
-- Path names must be plural if they are expected to create, delete, update, or
-  return multiple records. For example, an endpoint to list all Subject records
-  would be `/subjects`
-- In the case of compound path names (i.e., paths involving the names of more than
-  one model), the final model name in the path's plurality must indicate whether
-  it interacts with one or more records.
-- References to existing records must be made via the primary key for that type
-  of record whenever possible. For example, a specific Bam would be referenced
-  by its `bam_id`.
+- Path names must be singular regardless of how many records are actually being
+  created, modified, deleted, or returned.
+- References to existing records must be made via the name field for that type
+  of record whenever possible.
+  - The name fields for resources will be prepended with the name of the resource
+    when it is not already included. For example, the name field of a Target is
+    `name`, but to avoid confusion, it will be referred to as `target_name`.
+  - The name field for Sample records will be referred to as `sample_name` even
+    though the name of the field in the database is `formal_name`.
+  - Compound names will be handled on a case by case basis since only one example
+    currently exists.
+    - Project records will be referred to with `project_name` (`name`) and
+      `subproject`
 - Paths must begin with the name of the model being interacted with. For example,
   if a user is creating a project, the path should begin with `/project`.
   - In the case of smaller models that are additional information to another
