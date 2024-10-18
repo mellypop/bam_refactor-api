@@ -12,6 +12,7 @@ tags:
   - name: Bam Pair
   - name: Order
   - name: Project
+  - name: Read Group
   - name: Sample
   - name: Subject
   - name: Suite
@@ -506,6 +507,46 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Project'
+  /read_group:
+    get:
+      summary: List Read Groups
+      tags:
+        - Read Group
+      parameters:
+        - name: project_name
+          in: query
+          schema:
+            type: string
+        - name: subproject
+          in: query
+          schema:
+            type: string
+        - name: sample_name
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: target_name
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: List Read Groups
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - $ref: '#/components/schemas/Paginated'
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ReadGroup'
   /sample:
     get:
       summary: List Samples
@@ -988,6 +1029,13 @@ components:
         username:
           description: The username of the primary investigator listed on the project
           type: string
+    ReadGroup:
+      type: object
+      properties:
+        read_group_id:
+          description: The primary key of the Read Group record
+          example: 123456
+          type: integer
     Sample:
       type: object
       properties:
