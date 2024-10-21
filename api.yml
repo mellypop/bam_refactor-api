@@ -12,7 +12,9 @@ tags:
   - name: Bam Pair
   - name: Order
   - name: Project
+  - name: Read Group
   - name: Sample
+  - name: Source
   - name: Subject
   - name: Suite
   - name: Target
@@ -506,6 +508,92 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Project'
+  /read_group:
+    get:
+      summary: List Read Groups
+      tags:
+        - Read Group
+      parameters:
+        - name: project_name
+          in: query
+          schema:
+            type: string
+        - name: subproject
+          in: query
+          schema:
+            type: string
+        - name: sample_name
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: target_name
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: List Read Groups
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - $ref: '#/components/schemas/Paginated'
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ReadGroup'
+    post:
+      summary: Create Read Group
+      tags:
+        - Read Group
+      responses:
+        201:
+          description: Read Group Created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ReadGroup'
+  /read_group/{read_group_id}:
+    get:
+      summary: Show Read Group
+      tags:
+        - Read Group
+      responses:
+        200:
+          description: Read Group Details
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ReadGroup'
+    patch:
+      summary: Update Read Group
+      tags:
+        - Read Group
+      responses:
+        201:
+          description: Read Group Updated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ReadGroup'
   /sample:
     get:
       summary: List Samples
@@ -696,6 +784,40 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Sample'
+  /source:
+    get:
+      summary: List Sources
+      tags:
+        - Source
+      responses:
+        200:
+          description: List Sources
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - $ref: '#/components/schemas/Paginated'
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Source'
+    post:
+      summary: Create Source
+      tags:
+        - Source
+      responses:
+        201:
+          description: Source Created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Source'
   /subject:
     get:
       summary: List Subjects
@@ -988,6 +1110,37 @@ components:
         username:
           description: The username of the primary investigator listed on the project
           type: string
+    ReadGroup:
+      type: object
+      properties:
+        read_group_id:
+          description: The primary key of the Read Group record
+          example: 123456
+          type: integer
+        project_id:
+          description: The primary key of the Project the Read Group is associated with
+          example: 123456
+          type: integer
+        sample_target_id:
+          type: integer
+        source_id:
+          type: integer
+        rg_label:
+          type: string
+        status:
+          type: string
+        notes:
+          type: string
+        pl:
+          type: string
+        pu:
+          type: string
+        dt:
+          type: string
+        sm:
+          type: string
+        lb:
+          type: string
     Sample:
       type: object
       properties:
@@ -1036,6 +1189,8 @@ components:
         - P
         - R
         - X
+    Source:
+      type: object
     Subject:
       type: object
       properties:
