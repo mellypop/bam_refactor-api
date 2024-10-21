@@ -25,6 +25,32 @@ paths:
   /anls_run:
       summary: Analysis Run
       description: Actions related to analysis runs
+      get:
+        summary: List Analysis Runs
+        description: List all or a filtered subset of Analysis Runs
+        tags:
+          - Analysis Run
+        parameters:
+          - $ref: '#/components/parameters/anls_type_name'
+          - $ref: '#/components/parameters/formal_name'
+          - $ref: '#/components/parameters/target_name'
+          - $ref: '#/components/parameters/project_name'
+          - $ref: '#/components/parameters/subproject'
+        responses:
+          200:
+            description: An array of Analysis Run records
+            content:
+              application/json:
+                schema:
+                  allOf:
+                    - $ref: '#/components/schemas/Success'
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/PendingAnlsRun'
+          401:
+              $ref: '#/components/responses/401'
       post:
         summary: Create Analysis Run
         description: Create a new Analysis Run record
@@ -146,34 +172,7 @@ paths:
                     properties:
                       tartan:
                         $ref: '#/components/schemas/Tartan'
-  /anls_runs:
-    get:
-      summary: List Analysis Runs
-      description: List all or a filtered subset of Analysis Runs
-      tags:
-        - Analysis Run
-      parameters:
-        - $ref: '#/components/parameters/anls_type_name'
-        - $ref: '#/components/parameters/formal_name'
-        - $ref: '#/components/parameters/target_name'
-        - $ref: '#/components/parameters/project_name'
-        - $ref: '#/components/parameters/subproject'
-      responses:
-        200:
-          description: An array of Analysis Run records
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/Success'
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/PendingAnlsRun'
-        401:
-            $ref: '#/components/responses/401'
-  /anls_runs/pending:
+  /anls_run/pending:
       get:
         summary: Pending Analysis Runs
         description: Get pending runs
@@ -671,6 +670,23 @@ paths:
       summary: Create Project
       tags:
         - Project
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                project_name:
+                  type: string
+                subproject:
+                  type: string
+                notes:
+                  type: string
+                username:
+                  type: string
+                tartan_id:
+                  example: 123456
+                  type: integer
       responses:
         201:
           description: Project created
@@ -682,7 +698,10 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Project'
-  /project/{project_id}:
+  /project/{project_name}/{subproject}:
+    parameters:
+      - $ref: '#/components/parameters/project_name_path'
+      - $ref: '#/components/parameters/subproject_path'
     get:
       summary: Show Project
       tags:
@@ -698,6 +717,45 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Project'
+  /project/{project_name}/{subproject}/tartan:
+    parameters:
+      - $ref: '#/components/parameters/project_name_path'
+      - $ref: '#/components/parameters/subproject_path'
+    get:
+      summary: Show Tartan for Project
+      tags:
+        - Project
+        - Tartan
+      responses:
+        200:
+          description: The TARTan the Project is associated with
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Tartan'
+    post:
+      summary: Update Tartan for Project
+      tags:
+        - Project
+        - Tartan
+      responses:
+        200:
+          description: Tartan updated successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Project'
+                    properties:
+                      tartan:
+                        $ref: '#/components/schemas/Tartan'
   /read_group:
     get:
       summary: List Read Groups
@@ -1127,6 +1185,25 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Target'
+  /tartan:
+    get:
+      summary: List TARTans
+      tags:
+        - Target
+      responses:
+        200:
+          description: Available TARTans
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - $ref: '#/components/schemas/Paginated'
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Tartan'
 components:
   examples:
     error-bad-request:
@@ -1189,11 +1266,27 @@ components:
       name: project_name
       schema:
         type: string
+    project_name_path:
+      in: path
+      description: The main name of a project. This is often a PI name but can be different for larget projects.
+      example: PersonName
+      name: project_name
+      required: true
+      schema:
+        type: string
     subproject:
       in: query
       description: The secondary name of a project. This is more narrow than the project's name and can include information such as a year, a sequencing type, or something else meaningful.
       example: Project2023
       name: subproject
+      schema:
+        type: string
+    subproject_path:
+      in: path
+      description: The secondary name of a project. This is more narrow than the project's name and can include information such as a year, a sequencing type, or something else meaningful.
+      example: Project2023
+      name: subproject
+      required: true
       schema:
         type: string
     target_name:
