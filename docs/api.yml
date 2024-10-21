@@ -803,6 +803,21 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Source'
+    post:
+      summary: Create Source
+      tags:
+        - Source
+      responses:
+        201:
+          description: Source Created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Source'
   /subject:
     get:
       summary: List Subjects
