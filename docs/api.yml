@@ -547,6 +547,21 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/ReadGroup'
+    post:
+      summary: Create Read Group
+      tags:
+        - Read Group
+      responses:
+        201:
+          description: Read Group Created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ReadGroup'
   /sample:
     get:
       summary: List Samples
@@ -1036,6 +1051,30 @@ components:
           description: The primary key of the Read Group record
           example: 123456
           type: integer
+        project_id:
+          description: The primary key of the Project the Read Group is associated with
+          example: 123456
+          type: integer
+        sample_target_id:
+          type: integer
+        source_id:
+          type: integer
+        rg_label:
+          type: string
+        status:
+          type: string
+        notes:
+          type: string
+        pl:
+          type: string
+        pu:
+          type: string
+        dt:
+          type: string
+        sm:
+          type: string
+        lb:
+          type: string
     Sample:
       type: object
       properties:
