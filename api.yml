@@ -1189,7 +1189,7 @@ paths:
     get:
       summary: List TARTans
       tags:
-        - Target
+        - Tartan
       responses:
         200:
           description: Available TARTans
