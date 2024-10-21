@@ -14,6 +14,7 @@ tags:
   - name: Project
   - name: Read Group
   - name: Sample
+  - name: Source
   - name: Subject
   - name: Suite
   - name: Target
@@ -562,6 +563,37 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/ReadGroup'
+  /read_group/{read_group_id}:
+    get:
+      summary: Show Read Group
+      tags:
+        - Read Group
+      responses:
+        200:
+          description: Read Group Details
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ReadGroup'
+    patch:
+      summary: Update Read Group
+      tags:
+        - Read Group
+      responses:
+        201:
+          description: Read Group Updated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ReadGroup'
   /sample:
     get:
       summary: List Samples
@@ -752,6 +784,25 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Sample'
+  /source:
+    get:
+      summary: List Sources
+      tags:
+        - Source
+      responses:
+        200:
+          description: List Sources
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - $ref: '#/components/schemas/Paginated'
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Source'
   /subject:
     get:
       summary: List Subjects
@@ -1123,6 +1174,8 @@ components:
         - P
         - R
         - X
+    Source:
+      type: object
     Subject:
       type: object
       properties:
