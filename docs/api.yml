@@ -9,7 +9,6 @@ servers:
     description: Development
 tags:
   - name: Analysis Run
-  - name: Analysis Run Item
   - name: Bam
   - name: Bam Pair
   - name: Order
@@ -81,7 +80,7 @@ paths:
     post:
       summary: Set Analysis Run Item status
       tags:
-        - Analysis Run Item
+        - Analysis Run
       requestBody:
         content:
           application/json:
