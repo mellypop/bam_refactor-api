@@ -8,6 +8,8 @@ servers:
   - url: https://localhost/raptr/api/stjude/v2
     description: Development
 tags:
+  - name: Analysis Run
+  - name: Analysis Run Item
   - name: Bam
   - name: Bam Pair
   - name: Order
@@ -18,7 +20,195 @@ tags:
   - name: Subject
   - name: Suite
   - name: Target
+  - name: Tartan
 paths:
+  /anls_run:
+      summary: Analysis Run
+      description: Actions related to analysis runs
+      post:
+        summary: Create Analysis Run
+        description: Create a new Analysis Run record
+        tags:
+          - Analysis Run
+        requestBody:
+          $ref: '#/components/requestBodies/AnlsRunCreate'
+        responses:
+          201:
+            description: The newly created Analysis Run record
+            content:
+              application/json:
+                schema:
+                  allOf:
+                    - $ref: '#/components/schemas/Success'
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/PendingAnlsRun'
+                    returnCode:
+                      example: 201
+          400:
+            $ref: '#/components/responses/400'
+          401:
+            $ref: '#/components/responses/401'
+  /anls_run/{anls_run_id}/status:
+    parameters:
+      - $ref: '#/components/parameters/anls_run_id'
+    post:
+      summary: Set Analysis Run Item status
+      tags:
+        - Analysis Run Item
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                current_status_code:
+                  description: The code for the current status of items in the AnlsRun
+                  example: I
+                  type: string
+                new_status_code:
+                  description: The code for the status to set for items in the AnlsRun
+                  example: L
+                  type: string
+                notify:
+                  description: A flag used to indicate whether or not to send notifications related to this status update
+                  example: true
+                  default: true
+                  type: boolean
+                message:
+                  description: An additional message to be appended to notifications about the requested status update
+                  example: An example message
+                  type: string
+                strict:
+                  description: A flag for switching between strict updates or piecemeal updates. When true, if any item for the run has a different status, the request will fail. When false, only items with the indicated status will be updated.
+                  default: true
+                  example: true
+                  type: boolean
+              required:
+                - current_status_code
+                - new_status_code
+      responses:
+        200:
+          description: Status successfully updated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AnlsRunItem'
+                  success:
+                    example: Analysis Run Item status updated successfully
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+  /anls_run/{anls_run_id}/tartan:
+    get:
+      summary: Show AnlsRun's Tartan
+      description: Returns the Tartan record associated with the Analysis Run
+      tags:
+        - Analysis Run
+        - Tartan
+      responses:
+        200:
+          description: The Tartan associated with the Analysis Run
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    type: object
+                    $ref: '#/components/schemas/Tartan'
+    post:
+      summary: Set Tartan for Analysis Run
+      description: Update the Tartan associated with the Analysis Run
+      tags:
+        - Analysis Run
+        - Tartan
+      responses:
+        200:
+          description: Tartan successfuly updated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AnlsRun'
+                    properties:
+                      tartan:
+                        $ref: '#/components/schemas/Tartan'
+  /anls_runs:
+    get:
+      summary: List Analysis Runs
+      description: List all or a filtered subset of Analysis Runs
+      tags:
+        - Analysis Run
+      parameters:
+        - $ref: '#/components/parameters/anls_type_name'
+        - $ref: '#/components/parameters/formal_name'
+        - $ref: '#/components/parameters/target_name'
+        - $ref: '#/components/parameters/project_name'
+        - $ref: '#/components/parameters/subproject'
+      responses:
+        200:
+          description: An array of Analysis Run records
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PendingAnlsRun'
+        401:
+            $ref: '#/components/responses/401'
+  /anls_runs/pending:
+      get:
+        summary: Pending Analysis Runs
+        description: Get pending runs
+        tags:
+          - Analysis Run
+        parameters:
+          - name: anls_type_name
+            description: The name of the analysis type to narrow the list to
+            in: path
+            required: false
+            example: coverage-post
+            schema:
+              type: string
+          - $ref: '#/components/parameters/formal_name'
+          - $ref: '#/components/parameters/target_name'
+          - $ref: '#/components/parameters/project_name'
+          - $ref: '#/components/parameters/subproject'
+          - $ref: '#/components/parameters/tartan_identifier'
+
+        responses:
+          200:
+            description: A list of anls_runs that are pending
+            content:
+              application/json:
+                schema:
+                  allOf:
+                    - $ref: '#/components/schemas/Success'
+                    - $ref: '#/components/schemas/Paginated'
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/PendingAnlsRun'
+          401:
+            $ref: '#/components/responses/401'
   /bam:
     get:
       summary: List Bams
@@ -938,7 +1128,134 @@ paths:
                     items:
                       $ref: '#/components/schemas/Target'
 components:
+  examples:
+    error-bad-request:
+      summary: Bad request
+      value:
+        errors:
+          - One or more required parameters were not included
+        returnCode: 400
+    error-not-authenticated:
+      summary: Unauthorized
+      value:
+        errors:
+          - Credentials not provided or invalid
+        returnCode: 401
+    error-not-authorized:
+      summary: Forbidden
+      value:
+        errors:
+          - Authenticated user not authorized for this action
+        returnCode: 403
+    error-not-found:
+      summary: Resource not found
+      value:
+        errors:
+          - Resource could not be found
+        returnCode: 404
+    error-conflict:
+      summary: Conflict
+      value:
+        errors:
+          - Action could not be completed because of a conflict in the current state of the resouce
+        returnCode: 409
+  parameters:
+    anls_run_id:
+      in: path
+      description: The primary key used to uniquely identify an anls_run record
+      example: 123456
+      name: anls_run_id
+      required: true
+      schema:
+        type: integer
+    anls_type_name:
+      in: query
+      description: The name of a type of analysis to be performed. These are often kebab case.
+      example: intake
+      name: anls_type_name
+      schema:
+        type: string
+    formal_name:
+      in: query
+      description: The name of a sample, which is often referred to as a CompBio ID
+      example: SJNORM012345_D1
+      name: formal_name
+      schema:
+        type: string
+    project_name:
+      in: query
+      description: The main name of a project. This is often a PI name but can be different for larget projects.
+      example: PersonName
+      name: project_name
+      schema:
+        type: string
+    subproject:
+      in: query
+      description: The secondary name of a project. This is more narrow than the project's name and can include information such as a year, a sequencing type, or something else meaningful.
+      example: Project2023
+      name: subproject
+      schema:
+        type: string
+    target_name:
+      in: query
+      description: The name used to refer to a target
+      example: WHOLE_GENOME
+      name: target_name
+      schema:
+        type: string
+    tartan_identifier:
+      in: query
+      description: The string identifier used to indicate which tartan is being used
+      example: central
+      name: tartan_identifier
+      schema:
+        type: string
   requestBodies:
+    AnlsRunCreate:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              formal_name:
+                description: The name of the sample. This is often referred to as a CompBio ID.
+                example: SJST123456_D1
+                type: string
+              target_name:
+                description: The name of the target
+                example: WHOLE_GENOME
+                type: string
+              project_name:
+                description: The name of the project. This is often, but not always, the name of the PI
+                example: Example
+                type: string
+              subproject:
+                description: A secondary name given to the project so that it may fall under a larger project umbrella
+                example: Subproject
+                type: string
+              anls_type_name:
+                description: The name of the analysis type to be performed
+                example: intake
+                type: string
+            required:
+              - formal_name
+              - target_name
+              - project_name
+              - subproject
+              - anls_type_name
+    AnlsRunUpdate:
+      content:
+        application/json:
+          schema:
+            type: object
+            allOf:
+              - $ref: '#/components/schemas/AnlsRunRequestBody'
+            properties:
+              anls_run_id:
+                description: The primary key of the requested Analysis Run
+                type: integer
+            required:
+              - anls_run_id
     Sample:
       description: The standard request body for creating or updating a Sample
       content:
@@ -956,7 +1273,248 @@ components:
                 type: string
               sample_type:
                 $ref: '#/components/schemas/SampleType'
+  responses:
+    400:
+      description: Bad request
+      content:
+        application/json:
+          examples:
+            error-not-authenticated:
+              $ref: '#/components/examples/error-bad-request'
+          schema:
+            $ref: '#/components/schemas/Error'
+    401:
+      description: User not authenticated
+      content:
+        application/json:
+          examples:
+            error-not-authenticated:
+              $ref: '#/components/examples/error-not-authenticated'
+          schema:
+            $ref: '#/components/schemas/Error'
+    403:
+      description: User not authorized
+      content:
+        application/json:
+          examples:
+            error-not-authenticated:
+              $ref: '#/components/examples/error-not-authorized'
+          schema:
+            $ref: '#/components/schemas/Error'
+    404:
+      description: Resource could not be found
+      content:
+        application/json:
+          examples:
+            404:
+              $ref: '#/components/examples/error-not-found'
+          schema:
+            $ref: '#/components/schemas/Error'
+    409:
+      description: Conflict
+      content:
+        application/json:
+          examples:
+            404:
+              $ref: '#/components/examples/error-conflict'
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
+    AnlsRun:
+      type: object
+      description: An analysis run object
+      properties:
+        anls_run_id:
+          type: integer
+          description: A unique numeric identifier for an analysis run
+          example: 123456
+        anls_type_id:
+          type: integer
+          description: The unique identifier for the type of analysis this run is for
+          example: 123456
+        name:
+          type: string
+          description: A randomized alphanumeric name for the analysis run
+          example: aBc123
+        is_complete:
+          type: boolean
+          description: A boolean flag denoting whether an analysis run is complete or not
+          example: false
+        archive_code:
+          type: string
+          description: The string code for the archive status of the record
+        notes:
+          type: string
+          description: Notes that have been added to the record
+        anls_type:
+          $ref: '#/components/schemas/AnlsType'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnlsRunItem'
+    AnlsRunRequestBody:
+        type: object
+        properties:
+          anls_type_id:
+            description: The primary key of the Analysis Type that applies to the run
+            type: integer
+          archive_code:
+            default: N
+            description: The code for an Archive Status record
+            type: string
+          is_complete:
+            default: false
+            description: A boolean flag indicating whether or not an Analysis Run has completed
+            type: boolean
+          name:
+            default: null
+            description: A unique name to be used as the name for this run. It is best to leave this null unless a specific name is needed
+            type: string
+          notes:
+            default: null
+            description: Notes that apply to the Analysis Run object
+            type: string
+    PendingAnlsRun:
+      type: object
+      description: An analysis run object formatted specifically for the getPendingAnlsRuns endpoint
+      properties:
+        anls_run_id:
+          type: integer
+          description: A unique identifier for an analysis run
+          example: 123456
+        anls_run_name:
+          type: string
+          description: The randomly generated name of the run
+          example: 0XEp4VgW
+        anls_type_name:
+          type: string
+          description: The string name of the type of analysis that was/is to be run
+          example: coverage-post
+        is_complete:
+          type: boolean
+          description: A value indicating whether the run has completed or not
+          example: false
+        anls_run_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/PendingAnlsRunItem'
+    AnlsRunItem:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Item'
+      properties:
+        status_id:
+          type: integer
+          description: A unique numeric identifier for a status
+          example: 123456
+        begin_date:
+          type: string
+          description: The timestamp for when work on this item began
+          example: '1970-01-01 00:00:00'
+        end_date:
+          type: string
+          description: The timestamp for when work on this item concluded
+          example: '1970-01-01 00:00:00'
+        assignee:
+          type: string
+          description: The username of the person who was assigned work for this item
+          example: guest
+        is_most_recent:
+          type: boolean
+          description: A boolean flag indicating if this item is the most recent
+          example: true
+    PendingAnlsRunItem:
+      type: object
+      description: A single item associated with an analysis run
+      properties:
+        anls_run_item_id:
+          type: integer
+          description: The unique identifier for the record
+          example: 123456
+        status_code:
+          type: string
+          description: The string code for the current status of the item
+          example: I
+        is_most_recent:
+          type: boolean
+          description: A flag indicating whether the item is the most recent of its kind
+          example: true
+        project_name:
+          type: string
+          description: The name of the project that this item is for
+          example: testProject
+        subproject:
+          type: string
+          description: The subproject name that this item is for
+          example: testSubproject
+        formal_name:
+          type: string
+          description: The formal name for the item, which is the sample name or a sample pair name
+          example: SJNORM012345_D1
+        genome:
+          type: string
+          description: The name of the genome set for this item
+          example:
+      oneOf:
+        - $ref: '#/components/schemas/PendingAnlsRunItemBam'
+        - $ref: '#/components/schemas/PendingAnlsRunItemBamPair'
+        - $ref: '#/components/schemas/PendingAnlsRunItemOrderSubject'
+        - $ref: '#/components/schemas/PendingAnlsRunItemReadGroup'
+    PendingAnlsRunItemBam:
+      type: object
+      description: The properties for a pending AnlsRunItem that is for a Bam
+      properties:
+        bam_qualifier:
+          type: string
+          description: A string qualifier for a BAM
+          example: '-'
+        bam_id:
+          type: integer
+          description: The primary key for the associated Bam record
+          example: 123456
+    PendingAnlsRunItemBamPair:
+      type: object
+      description: The properties associated with a bam_pair for a pending AnlsRunItem
+      properties:
+        bam_pair_qualifier:
+          type: string
+          description: A string qualifier for a BAM pair
+          example: '-'
+        bam_pair_id:
+          type: integer
+          description: The primary key of the associated BamPair record
+        item_type:
+          type: string
+          description: The type of item this record is for
+          example: bam_pair
+    PendingAnlsRunItemOrderSubject:
+      type: object
+      description: The properties associated with an order_subject for a pending AnlsRunItem
+      properties:
+        order_subject_id:
+          type: integer
+          description: The primary key for the order_subject associated with the AnlsRunItem
+          example: 123456
+        order_code:
+          type: integer
+          example: 123456
+        item_type:
+          type: string
+          description: The type of item this record is for
+          example: order_subject
+    PendingAnlsRunItemReadGroup:
+      type: object
+      properties:
+        read_group_id:
+          type: integer
+          description: The primary key for a read_group
+          example: 123456
+        rg_label:
+          type: string
+        item_type:
+          type: string
+          description: The type of item this record is for
+          example: read_group
     AnlsType:
       type: object
       properties:
@@ -1011,8 +1569,18 @@ components:
           example: Some note
           type: string
         status:
-          example: Waiting
-          type: string
+          $ref: '#/components/schemas/BamStatus'
+    BamStatus:
+      type: string
+      description: A value indicating the status of a particular Bam record
+      default: Pending
+      enum:
+        - Failed
+        - Pending
+        - Normal
+        - QcFailed
+        - Obsolete
+        - Waiting
     BamPair:
       type: object
       properties:
@@ -1042,6 +1610,84 @@ components:
         - 'Normal'
         - 'Obsolete'
         - 'Special'
+    Center:
+      type: object
+      properties:
+        center_id:
+          type: integer
+          description: A unique numerical identifier for the record
+          example: 123456
+        name:
+          type: string
+          description: The name of the center
+        official_name:
+          type: string
+          description: The official name of the center
+    DiseaseCode:
+      type: object
+      properties:
+        disease_code_id:
+          type: integer
+          description: A unique numeric identifier for the record
+          example: 123456
+        disease_code:
+          type: string
+          description: A short alphanumeric abbreviation for the disease
+          example: NORM
+        disease_name:
+          type: string
+          description: The full name of the disease
+        deprecated:
+          type: boolean
+          description: A boolean flag indicating whether or not the disease code has been deprecated
+          example: false
+    Genome:
+      type: object
+      properties:
+        genome_id:
+          type: integer
+          description: A unique numerical identifier for the record
+        organism_id:
+          type: integer
+          description: The primary key of the Organism record the Genome is for
+        name:
+          type: string
+          description: The name used for the genome
+        is_usable:
+          type: boolean
+          description: A flag indicating whether or not the Genome can be used for mapping/analysis
+        organism:
+          $ref: '#/components/schemas/Organism'
+    Item:
+        type: object
+        description: A generic item record that can point to one of any type of items (e.g., BAM)
+        properties:
+          item_id:
+            type: integer
+            description: A unique numerical identifier
+            example: 123456
+          is_active:
+            type: boolean
+            example: true
+          blt_item_type:
+            type: string
+            description: A string identifier for the type of item this record is for
+            example: bam
+          blt_item_id:
+            type: integer
+            description: An numerical identifier that is unique for the associated item type table but not necessarily unique for this table
+            example: 123456
+          case_subject_id:
+            type: integer
+            description: A unique numerical identifier for a subject record
+            example: 123456
+          blt_item:
+            type: object
+            oneOf:
+              - $ref: '#/components/schemas/Bam'
+              - $ref: '#/components/schemas/BamPair'
+              - $ref: '#/components/schemas/OrderSubject'
+              - $ref: '#/components/schemas/ReadGroup'
     Order:
       type: object
       properties:
@@ -1086,6 +1732,59 @@ components:
         - 'draft'
         - 'hold'
         - 'normal'
+    OrderSubject:
+      type: object
+      properties:
+        order_subject_id:
+          type: integer
+          description: A unique numeric identifier for the record
+          example: 123456
+        order_id:
+          type: integer
+          description: The primary key of the order associated with this record
+          example: 123456
+        subject_id:
+          type: integer
+          description: The primary key of the subject associated with this record
+          example: 123456
+    Organism:
+      type: object
+      description: A type of living creature for which analyses may be performed
+      properties:
+        organism_id:
+          type: integer
+          description: A unique numeric identifier for the record
+        name:
+          type: string
+          description: The name used to identify the Organism
+        genus:
+          type: string
+          description: The genus of the Organism
+          example: Homo
+        species:
+          type: string
+          description: The species of the Organism
+          example: sapien
+    Person:
+      type: object
+      description: A person (or user) registered to use the RAPTR web application or API
+      properties:
+        person_id:
+          type: integer
+          description: A unique numerical identifier for a person
+          example: 123456
+        username:
+          type: string
+          description: A unique string used to identify a person in a more human readable format
+          example: guest
+        name:
+          type: string
+          description: The full name of the person for which this record was created
+          example: Thomas Smith
+        email:
+          type: string
+          description: The email address this user can be reached via
+          example: Fake.Person@stjude.org
     Project:
       type: object
       properties:
@@ -1247,11 +1946,30 @@ components:
           description: The sequencing type for the Target
           example: WHOLEGENOME
           type: string
+    Tartan:
+      description: A named instance of TARTan
+      type: object
+      properties:
+        tartan_id:
+          type: integer
+          example: 1
+        instance_identifier:
+          type: string
+          example: central
     Success:
       type: object
       properties:
         data:
           type: object
+    Error:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+        returnCode:
+          type: integer
     Paginated:
       type: object
       properties:
