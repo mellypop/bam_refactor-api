@@ -498,6 +498,10 @@ paths:
                   items:
                     type: object
                     properties:
+                      project_name:
+                        $ref: '#/components/schemas/project_name'
+                      subproject:
+                        $ref: '#/components/schemas/subproject'
                       sample_name:
                         $ref: '#/components/schemas/sample_name'
                       target_name:
@@ -561,6 +565,10 @@ paths:
               items:
                 type: object
                 properties:
+                  project_name:
+                    $ref: '#/components/schemas/project_name'
+                  subproject:
+                    $ref: '#/components/schemas/subproject'
                   sample_name:
                     $ref: '#/components/schemas/sample_name'
                   target_name:
