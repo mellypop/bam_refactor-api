@@ -7,6 +7,13 @@ site_description:
   herein is a prospective design and therefore subject to change.
 site_author: mellypop
 
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
 nav:
   - Home: index.md
   - Documentation: documentation.md
