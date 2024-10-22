@@ -1207,7 +1207,7 @@ components:
       name: status
       required: false
       schema:
-        $ref: '#/components/schema/read_group_status'
+        $ref: '#/components/schemas/read_group_status'
     sample_name:
       description: The name of the Sample the Bam is associated with
       in: query
@@ -1984,6 +1984,10 @@ components:
       description: A string indicating the status of a Read Group
       enum:
         - Normal
+        - Failed
+        - Pending
+        - UnknownSample
+        - QcFailed
       type: string
     sample_name:
       description:
