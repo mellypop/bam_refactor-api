@@ -18,6 +18,7 @@ nav:
   - Home: index.md
   - Documentation: documentation.md
   - Guidelines: guidelines.md
+  - Orders: orders.md
   - Schema: schema.md
 
 plugins:
