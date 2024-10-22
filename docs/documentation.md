@@ -1,1 +1,1 @@
-<swagger-ui src="api.yml"/>
+<redoc src="api.yml"/>

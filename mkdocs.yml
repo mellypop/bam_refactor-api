@@ -13,6 +13,6 @@ nav:
   - Guidelines: guidelines.md
 
 plugins:
-  - swagger-ui-tag
+  - redoc-tag
 
 theme: material
