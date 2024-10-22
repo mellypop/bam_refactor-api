@@ -7,23 +7,23 @@
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="This mini site is meant to serve as documentation for an API design that is being created to go along with the Bam Refactor changes. Everything contained herein is a prospective design and therefore subject to change." name="description"/>
 <meta content="mellypop" name="author"/>
-<link href="documentation/" rel="next"/>
-<link href="assets/images/favicon.png" rel="icon"/>
+<link href="../guidelines/" rel="prev"/>
+<link href="../assets/images/favicon.png" rel="icon"/>
 <meta content="mkdocs-1.6.1, mkdocs-material-9.5.42" name="generator"/>
-<title>RAPTR API Design</title>
-<link href="assets/stylesheets/main.0253249f.min.css" rel="stylesheet"/>
-<link href="assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<title>Schema - RAPTR API Design</title>
+<link href="../assets/stylesheets/main.0253249f.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
 <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
-<script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+<script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
 </head>
 <body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
 <input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
 <input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
 <label class="md-overlay" for="__drawer"></label>
 <div data-md-component="skip">
-<a class="md-skip" href="#bam-refactor-api">
+<a class="md-skip" href="#schema-changes">
           Skip to content
         </a>
 </div>
@@ -31,7 +31,7 @@
 </div>
 <header class="md-header md-header--shadow" data-md-component="header">
 <nav aria-label="Header" class="md-header__inner md-grid">
-<a aria-label="RAPTR API Design" class="md-header__button md-logo" data-md-component="logo" href="." title="RAPTR API Design">
+<a aria-label="RAPTR API Design" class="md-header__button md-logo" data-md-component="logo" href=".." title="RAPTR API Design">
 <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
 </a>
 <label class="md-header__button md-icon" for="__drawer">
@@ -47,7 +47,7 @@
 <div class="md-header__topic" data-md-component="header-topic">
 <span class="md-ellipsis">
             
-              Home
+              Schema
             
           </span>
 </div>
@@ -88,7 +88,7 @@
 <div class="md-sidebar__inner">
 <nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
 <label class="md-nav__title" for="__drawer">
-<a aria-label="RAPTR API Design" class="md-nav__button md-logo" data-md-component="logo" href="." title="RAPTR API Design">
+<a aria-label="RAPTR API Design" class="md-nav__button md-logo" data-md-component="logo" href=".." title="RAPTR API Design">
 <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
 </a>
     RAPTR API Design
@@ -104,34 +104,80 @@
 </a>
 </div>
 <ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item md-nav__item--active">
-<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
-<a class="md-nav__link md-nav__link--active" href=".">
+<li class="md-nav__item">
+<a class="md-nav__link" href="..">
 <span class="md-ellipsis">
     Home
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="documentation/">
+<a class="md-nav__link" href="../documentation/">
 <span class="md-ellipsis">
     Documentation
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="guidelines/">
+<a class="md-nav__link" href="../guidelines/">
 <span class="md-ellipsis">
     Guidelines
   </span>
 </a>
 </li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="schema/">
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    Schema
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
 <span class="md-ellipsis">
     Schema
   </span>
 </a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#removing-bam_tpl">
+<span class="md-ellipsis">
+      Removing bam_tpl
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#adding-bam_order">
+<span class="md-ellipsis">
+      Adding bam_order
+    </span>
+</a>
+<nav aria-label="Adding bam_order" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#potential-concerns">
+<span class="md-ellipsis">
+      Potential Concerns
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#er-diagram">
+<span class="md-ellipsis">
+      ER Diagram
+    </span>
+</a>
+</li>
+</ul>
+</nav>
 </li>
 </ul>
 </nav>
@@ -142,23 +188,172 @@
 <div class="md-sidebar__scrollwrap">
 <div class="md-sidebar__inner">
 <nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#removing-bam_tpl">
+<span class="md-ellipsis">
+      Removing bam_tpl
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#adding-bam_order">
+<span class="md-ellipsis">
+      Adding bam_order
+    </span>
+</a>
+<nav aria-label="Adding bam_order" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#potential-concerns">
+<span class="md-ellipsis">
+      Potential Concerns
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#er-diagram">
+<span class="md-ellipsis">
+      ER Diagram
+    </span>
+</a>
+</li>
+</ul>
 </nav>
 </div>
 </div>
 </div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
-<h1 id="bam-refactor-api">Bam Refactor API</h1>
-<p>As part of the Bam Refactor project, a new API is being created to help avoid
-making direct database queries wherever possible, thus making most interactions
-with the RAPTR database resistant to schema changes.</p>
-<p>This site is intended to house the design documentation and API guidelines to
-make both more accessible while this design is underway. The finalized API
-documentation will be included in RAPTR's standard API documentation once it has
-been solidified and implemented.</p>
-<p>As this site is intended to aid in the design process, nothing herein should be
-seen as set in stone. The guidelines and documentation are subject to change as
-design decisions are finalized.</p>
+<h1 id="schema-changes">Schema Changes</h1>
+<h2 id="removing-bam_tpl">Removing bam_tpl</h2>
+<p>The biggest change being made to the database schema is the removal of the
+<code>bam_tpl</code> table. All of the useful columns from that table are being moved to
+the <code>bam</code> table. These fields are: <code>sample_target_project_id</code>, <code>qualifier</code>,
+<code>primary_bam_id</code>, and <code>legacy</code>.</p>
+<p>Since <code>primary_bam_id</code> is a foreign key pointing to the <code>bam</code> table, it cannot
+be brought over directly and is instead replaced with a new boolean field named
+<code>is_primary</code>.</p>
+<h2 id="adding-bam_order">Adding bam_order</h2>
+<p>Instead of connecting <code>bam</code> to <code>orders</code> indirectly through
+<code>sample_target_project_order</code>, a new table is being created: <code>bam_order</code>. As
+part of adding this table, <code>sample_target_project_order</code> will be dropped, and
+all of its data will be migrated to <code>bam_order</code></p>
+<h3 id="potential-concerns">Potential Concerns</h3>
+<ul>
+<li>If either a <code>bam</code> or an order (<code>orders</code>) does not exist, then it may be difficult
+to preserve the connection represented by <code>sample_target_project_order</code>.</li>
+</ul>
+<h2 id="er-diagram">ER Diagram</h2>
+<pre class="mermaid"><code>erDiagram
+anls_type {
+    int anls_type_id PK
+    text name UK
+    text description
+    int ordinal UK
+    text blt_item_type
+    text bam_pair_role
+    bool is_combable
+    bool is_mapper
+}
+anls_type |o--o{ bam : ""
+
+bam {
+    int bam_id PK
+    int anls_type_id FK
+    text bam_status FK
+    int gedi_source_id
+    int genome_id FK
+    int sample_target_project_id FK
+    text notes
+    text qualifier
+    bool is_primary
+    bool legacy
+}
+bam |o--o{ bam_order : ""
+bam |o--o{ bam_pair : "case"
+bam |o--o{ bam_pair : "control"
+
+bam_order {
+    int bam_order_id PK
+    int bam_id FK
+    int order_id FK
+    bool do_analysis
+    bool do_nma
+}
+
+bam_pair {
+    int bam_pair_id PK
+    int case_bam_id FK
+    int control_bam_id FK
+    text qualifier
+    text status
+    text notes
+}
+
+bam_status {
+    int bam_status_id PK
+    text status UK
+    text description
+}
+bam_status |o--o{ bam : ""
+
+genome {
+    int genome_id PK
+    int organism_id FK
+    text name
+    bool is_usable
+}
+genome |o--o{ bam : ""
+
+orders {
+    int id PK
+}
+orders |o--o{ bam_order : ""
+
+organism {
+    int organism_id PK
+    text name
+    text genus
+    text species
+}
+organism |o--o{ genome : ""
+
+project {
+    int project_id PK
+    text name
+    text subproject
+    text username
+}
+project |o--o{ orders : ""
+
+sample {
+    int sample_id PK
+    text formal_name
+    text pi_name
+    text lab_name
+}
+sample |o--o{ sample_target : ""
+
+sample_target {
+    int sample_target_id PK
+    int sample_id FK
+    int target_id FK
+}
+sample_target |o--o{ sample_target_project : ""
+
+sample_target_project {
+    int sample_target_project_id PK
+    int project_id FK
+}
+sample_target_project |o--o{ bam : ""</code></pre>
 </article>
 </div>
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
@@ -182,8 +377,8 @@ design decisions are finalized.</p>
 <div class="md-dialog" data-md-component="dialog">
 <div class="md-dialog__inner md-typeset"></div>
 </div>
-<script id="__config" type="application/json">{"base": ".", "features": [], "search": "assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
-<script src="assets/javascripts/bundle.83f73b43.min.js"></script>
+<script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+<script src="../assets/javascripts/bundle.83f73b43.min.js"></script>
 <script>document$.subscribe(() => {
             const dark_scheme_name = "slate"
             
