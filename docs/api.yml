@@ -12,6 +12,7 @@ tags:
   - name: Bam
   - name: Bam Pair
   - name: Order
+  - name: Order Subject
   - name: Project
   - name: Read Group
   - name: Sample
@@ -216,30 +217,10 @@ paths:
       tags:
         - Bam
       parameters:
-        - name: project_name
-          description: The name of the Project the Bam is associated with
-          in: query
-          required: false
-          schema:
-            type: string
-        - name: subproject
-          description: The subproject of the Project the Bam is associated with
-          in: query
-          required: false
-          schema:
-            type: string
-        - name: sample_name
-          description: The name of the Sample the Bam is associated with
-          in: query
-          required: false
-          schema:
-            type: string
-        - name: target_id
-          description: The name of the Target the Bam is associated with
-          in: query
-          required: false
-          schema:
-            type: string
+        - $ref: '#/components/parameters/project_name'
+        - $ref: '#/components/parameters/subproject'
+        - $ref: '#/components/parameters/sample_name'
+        - $ref: '#/components/parameters/target_name'
         - name: qualifier
           description:
             The string used to separate this Bam from others sharing its sample,
@@ -275,17 +256,13 @@ paths:
               type: object
               properties:
                 project_name:
-                  description: The name of the Project the Bam will be created for
-                  type: string
+                  $ref: '#/components/schemas/project_name'
                 subproject:
-                  description: The subproject of the Project the Bam will be created for
-                  type: string
+                  $ref: '#/components/schemas/subproject'
                 sample_name:
-                  description: The name of the Sample the Bam will be created for
-                  type: string
+                  $ref: '#/components/schemas/sample_name'
                 target_name:
-                  description: The name of the Target that applies to the Bam
-                  type: string
+                  $ref: '#/components/schemas/target_name'
                 qualifier:
                   description:
                     A string used to separate a Bam from other Bams that share
@@ -464,26 +441,10 @@ paths:
       tags:
         - Order
       parameters:
-        - name: project_name
-          in: query
-          required: false
-          schema:
-            type: string
-        - name: subproject
-          in: query
-          required: false
-          schema:
-            type: string
-        - name: suite_name
-          in: query
-          required: false
-          schema:
-            type: string
-        - name: username
-          in: query
-          required: false
-          schema:
-            type: string
+        - $ref: '#/components/parameters/project_name'
+        - $ref: '#/components/parameters/subproject'
+        - $ref: '#/components/parameters/suite_name'
+        - $ref: '#/components/parameters/username'
       responses:
         200:
           description: All Orders
@@ -511,18 +472,13 @@ paths:
               type: object
               properties:
                 project_name:
-                  description: The name of the Project for which the Order will be created
-                  type: string
+                  $ref: '#/components/schemas/project_name'
                 subproject:
-                  description: The subproject of the Project for which the Order will be created
-                  type: string
+                  $ref: '#/components/schemas/subproject'
                 suite_name:
-                  description: The name of the Suite that will be run for this Order
-                  type: string
+                  $ref: '#/components/schemas/suite_name'
                 target_name:
-                  type: string
-                  description: The name of the Target for the new Order
-                  example: WHOLE_GENOME
+                  $ref: '#/components/schemas/target_name'
                 notes:
                   type: string
               required:
@@ -543,14 +499,7 @@ paths:
                     $ref: '#/components/schemas/Order'
   /order/{order_id}:
     parameters:
-      - name: order_id
-        description:
-          A unique numeric identifier for an Order
-        example: 123456
-        in: path
-        required: true
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/order_id_path'
     get:
       summary: Show Order
       tags:
@@ -572,16 +521,23 @@ paths:
       tags:
         - Order
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                bam_id:
-                  example: 123456
-                  type: integer
-              required:
-                - bam_id
+              type: array
+              items:
+                type: object
+                properties:
+                  sample_name:
+                    type: string
+                  target_name:
+                    type: string
+                  qualifier:
+                    type: string
+                required:
+                  - sample_name
+                  - target_name
       responses:
         201:
           description: Bam Added
@@ -636,21 +592,9 @@ paths:
       tags:
         - Project
       parameters:
-        - name: name
-          in: query
-          required: false
-          schema:
-            type: string
-        - name: subproject
-          in: query
-          required: false
-          schema:
-            type: string
-        - name: username
-          in: query
-          required: false
-          schema:
-            type: string
+        - $ref: '#/components/parameters/project_name'
+        - $ref: '#/components/parameters/subproject'
+        - $ref: '#/components/parameters/username'
       responses:
         200:
           description: All Samples
@@ -676,16 +620,15 @@ paths:
               type: object
               properties:
                 project_name:
-                  type: string
+                  $ref: '#/components/schemas/project_name'
                 subproject:
-                  type: string
+                  $ref: '#/components/schemas/subproject'
                 notes:
                   type: string
                 username:
-                  type: string
-                tartan_id:
-                  example: 123456
-                  type: integer
+                  $ref: '#/components/schemas/username'
+                tartan_identifier:
+                  $ref: '#/components/schemas/tartan_identifier'
       responses:
         201:
           description: Project created
@@ -761,26 +704,11 @@ paths:
       tags:
         - Read Group
       parameters:
-        - name: project_name
-          in: query
-          schema:
-            type: string
-        - name: subproject
-          in: query
-          schema:
-            type: string
-        - name: sample_name
-          in: query
-          schema:
-            type: string
-        - name: status
-          in: query
-          schema:
-            type: string
-        - name: target_name
-          in: query
-          schema:
-            type: string
+        - $ref: '#/components/parameters/project_name'
+        - $ref: '#/components/parameters/subproject'
+        - $ref: '#/components/parameters/sample_name'
+        - $ref: '#/components/parameters/read_group_status'
+        - $ref: '#/components/parameters/target_name'
       responses:
         200:
           description: List Read Groups
@@ -882,7 +810,7 @@ paths:
             include D (Diagnosis) and G (Germline)
           in: query
           schema:
-            $ref: '#/components/schemas/SampleType'
+            $ref: '#/components/schemas/sample_type'
         - name: subject_name
           description: The name of the Subject the Sample was derived from
           in: query
@@ -920,7 +848,7 @@ paths:
                 pi_name:
                   type: string
                 sample_type:
-                  $ref: '#/components/schemas/SampleType'
+                  $ref: '#/components/schemas/sample_type'
               required:
                 - subject_id
                 - disease_code
@@ -979,7 +907,7 @@ paths:
                 pi_name:
                   type: string
                 sample_type:
-                  $ref: '#/components/schemas/SampleType'
+                  $ref: '#/components/schemas/sample_type'
       responses:
         200:
           description: Sample Updated
@@ -1246,62 +1174,81 @@ components:
         type: integer
     anls_type_name:
       in: query
-      description: The name of a type of analysis to be performed. These are often kebab case.
-      example: intake
       name: anls_type_name
       schema:
-        type: string
+        $ref: '#/components/schemas/anls_type_name'
     formal_name:
       in: query
-      description: The name of a sample, which is often referred to as a CompBio ID
-      example: SJNORM012345_D1
       name: formal_name
       schema:
-        type: string
+        $ref: '#/components/schemas/sample_name'
+    order_id_path:
+        name: order_id
+        description:
+          A unique numeric identifier for an Order
+        example: 123456
+        in: path
+        required: true
+        schema:
+          type: integer
     project_name:
       in: query
-      description: The main name of a project. This is often a PI name but can be different for larget projects.
-      example: PersonName
       name: project_name
       schema:
-        type: string
+        $ref: '#/components/schemas/project_name'
     project_name_path:
       in: path
-      description: The main name of a project. This is often a PI name but can be different for larget projects.
-      example: PersonName
       name: project_name
       required: true
       schema:
-        type: string
+        $ref: '#/components/schemas/project_name'
+    read_group_status:
+      in: query
+      name: status
+      required: false
+      schema:
+        $ref: '#/components/schema/read_group_status'
+    sample_name:
+      description: The name of the Sample the Bam is associated with
+      in: query
+      name: sample_name
+      required: false
+      schema:
+        $ref: '#/components/schemas/sample_name'
     subproject:
       in: query
-      description: The secondary name of a project. This is more narrow than the project's name and can include information such as a year, a sequencing type, or something else meaningful.
-      example: Project2023
       name: subproject
       schema:
-        type: string
+        $ref: '#/components/schemas/subproject'
     subproject_path:
       in: path
-      description: The secondary name of a project. This is more narrow than the project's name and can include information such as a year, a sequencing type, or something else meaningful.
-      example: Project2023
       name: subproject
       required: true
       schema:
+        $ref: '#/components/schemas/subproject'
         type: string
+    suite_name:
+      name: suite_name
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/suite_name'
     target_name:
       in: query
-      description: The name used to refer to a target
-      example: WHOLE_GENOME
       name: target_name
       schema:
-        type: string
+        $ref: '#/components/schemas/target_name'
     tartan_identifier:
       in: query
-      description: The string identifier used to indicate which tartan is being used
-      example: central
       name: tartan_identifier
       schema:
-        type: string
+        $ref: '#/components/schemas/tartan_identifier'
+    username:
+      in: query
+      name: username
+      required: false
+      schema:
+        $ref: '#/components/schemas/username'
   requestBodies:
     AnlsRunCreate:
       content:
@@ -1310,25 +1257,15 @@ components:
             type: object
             properties:
               formal_name:
-                description: The name of the sample. This is often referred to as a CompBio ID.
-                example: SJST123456_D1
-                type: string
+                $ref: '#/components/schemas/sample_name'
               target_name:
-                description: The name of the target
-                example: WHOLE_GENOME
-                type: string
+                $ref: '#/components/schemas/target_name'
               project_name:
-                description: The name of the project. This is often, but not always, the name of the PI
-                example: Example
-                type: string
+                $ref: '#/components/schemas/project_name'
               subproject:
-                description: A secondary name given to the project so that it may fall under a larger project umbrella
-                example: Subproject
-                type: string
+                $ref: '#/components/schemas/subproject'
               anls_type_name:
-                description: The name of the analysis type to be performed
-                example: intake
-                type: string
+                $ref: '#/components/schemas/anls_type_name'
             required:
               - formal_name
               - target_name
@@ -1364,7 +1301,7 @@ components:
               pi_name:
                 type: string
               sample_type:
-                $ref: '#/components/schemas/SampleType'
+                $ref: '#/components/schemas/sample_type'
   responses:
     400:
       description: Bad request
@@ -1532,17 +1469,11 @@ components:
           description: A flag indicating whether the item is the most recent of its kind
           example: true
         project_name:
-          type: string
-          description: The name of the project that this item is for
-          example: testProject
+          $ref: '#/components/schemas/project_name'
         subproject:
-          type: string
-          description: The subproject name that this item is for
-          example: testSubproject
+          $ref: '#/components/schemas/subproject'
         formal_name:
-          type: string
-          description: The formal name for the item, which is the sample name or a sample pair name
-          example: SJNORM012345_D1
+          $ref: '#/components/schemas/sample_name'
         genome:
           type: string
           description: The name of the genome set for this item
@@ -1723,9 +1654,7 @@ components:
           description: A unique numeric identifier for the record
           example: 123456
         disease_code:
-          type: string
-          description: A short alphanumeric abbreviation for the disease
-          example: NORM
+          $ref: '#/components/schemas/disease_code'
         disease_name:
           type: string
           description: The full name of the disease
@@ -1743,8 +1672,7 @@ components:
           type: integer
           description: The primary key of the Organism record the Genome is for
         name:
-          type: string
-          description: The name used for the genome
+          $ref: '#/components/schemas/genome_name'
         is_usable:
           type: boolean
           description: A flag indicating whether or not the Genome can be used for mapping/analysis
@@ -1891,11 +1819,9 @@ components:
         description:
           type: string
         name:
-          description: The primary name of a project, often the name of a PI or a large project
-          type: string
+          $ref: '#/components/schemas/project_name'
         subproject:
-          description: A secondary name for a project, differentiating it from projects with the same name
-          type: string
+          $ref: '#/components/schemas/subproject'
         notes:
           type: string
         username:
@@ -1937,28 +1863,20 @@ components:
       properties:
         sample_id:
           description: THe primary key of the Sample record
-          example: 123456
+          example: 1
           type: integer
         subject_id:
           description: A foreign key pointing to the Sample's Subject
-          example: 123456
+          example: 1
           type: integer
         disease_code:
-          description: A short code indicating the disease for the Sample
-          example: NORM
-          type: string
+          $ref: '#/components/schemas/disease_code'
         formal_name:
-          description: The name of the Sample
-          example: SJNORM012345_D1
-          type: string
+          $ref: '#/components/schemas/sample_name'
         pi_name:
-          description: A secondary identifier used for the Sample
-          example: sample1
-          type: string
+          $ref: '#/components/schemas/pi_name'
         lab_name:
-          description: The long-form Sample name following the form {formal_name}-{lab_name}
-          example: SJNORM012345_D1-sample1
-          type: string
+          $ref: '#/components/schemas/lab_name'
         replaced_by:
           description: If not null, the sample_id of the Sample that has replaced this Sample
           example: 123456
@@ -1968,18 +1886,7 @@ components:
           example: 1
           type: integer
         sample_type:
-          $ref: '#/components/schemas/SampleType'
-    SampleType:
-      description: A single character code indicating the type of sample
-      type: string
-      enum:
-        - C
-        - D
-        - G
-        - O
-        - P
-        - R
-        - X
+          $ref: '#/components/schemas/sample_type'
     Source:
       type: object
     Subject:
@@ -2048,6 +1955,76 @@ components:
         instance_identifier:
           type: string
           example: central
+    # Individual field descriptions
+    anls_type_name:
+      description: The name of the analysis type to be performed
+      example: intake
+      type: string
+    disease_code:
+      description: A short code used to indicate a disease
+      example: NORM
+      type: string
+    genome_name:
+      description: The name used for the genome
+      example: GRCh37-lite
+      type: string
+    lab_name:
+      description: The combination of a Sample's name and its secondary identifier
+      example: SJNORM012345_D1-sample1
+      type: string
+    pi_name:
+      description: A secondary identifier for a Sample
+      example: sample1
+      type: string
+    project_name:
+      description: The primary name of a project, often the name of a PI or a large project
+      example: PCGP
+      type: string
+    read_group_status:
+      description: A string indicating the status of a Read Group
+      enum:
+        - Normal
+      type: string
+    sample_name:
+      description:
+        The name of a Sample. This value is the combination of several fields in
+        the Sample schema in the following format
+        SJ{disease_code}{subject_name (number only)}_{sample_type}{sample_index}
+      example: SJNORM012345_D1
+      type: string
+    sample_type:
+      description: A single character code indicating the type of sample
+      enum:
+        - C
+        - D
+        - G
+        - O
+        - P
+        - R
+        - X
+      type: string
+    subproject:
+      description:
+        A secondary name given to a Project to distinguish it from Projects that
+        share its name.
+      example: PCGP
+      type: string
+    suite_name:
+      description: The name of a Suite
+      example: default_GRCh37-lite_genome
+      type: string
+    target_name:
+      description: The name used to refer to a target
+      example: WHOLE_GENOME
+      type: string
+    tartan_identifier:
+      description: The string identifier used to indicate which tartan is being used
+      example: central
+      type: string
+    username:
+      description: The name of a Person
+      type: string
+    # Standard response schemas
     Success:
       type: object
       properties:
