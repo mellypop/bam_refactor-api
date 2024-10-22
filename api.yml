@@ -182,7 +182,7 @@ paths:
           - name: anls_type_name
             description: The name of the analysis type to narrow the list to
             in: path
-            required: false
+            required: true
             example: coverage-post
             schema:
               type: string
@@ -481,6 +481,36 @@ paths:
                   $ref: '#/components/schemas/target_name'
                 notes:
                   type: string
+                allow_auto_pairing:
+                  description:
+                    A boolean value indicating whether Bam Pairs should be
+                    auto-generated for the Bams added as part of this request.
+                  default: false
+                  type: boolean
+                advance_to_normal:
+                  description:
+                    A boolean value indicating whether the Order should be
+                    advanced to the Normal status after being created.
+                  default: false
+                  type: boolean
+                bams:
+                  description: Bam records that should be created for the Order
+                  items:
+                    type: object
+                    properties:
+                      sample_name:
+                        $ref: '#/components/schemas/sample_name'
+                      target_name:
+                        $ref: '#/components/schemas/target_name'
+                        type: string
+                      notes:
+                        type: string
+                      qualifier:
+                        type: string
+                    required:
+                      - sample_name
+                      - target_name
+                  type: array
               required:
                 - project_name
                 - subproject
@@ -516,8 +546,10 @@ paths:
                   data:
                     $ref: '#/components/schemas/Order'
   /order/{order_id}/bam:
+    parameters:
+      - $ref: '#/components/parameters/order_id_path'
     post:
-      summary: Add Bam to Order
+      summary: Add Bams to Order
       tags:
         - Order
       requestBody:
@@ -530,9 +562,12 @@ paths:
                 type: object
                 properties:
                   sample_name:
-                    type: string
+                    $ref: '#/components/schemas/sample_name'
                   target_name:
+                    $ref: '#/components/schemas/target_name'
                     type: string
+                  notes:
+                    $ref: '#/components/schemas/notes'
                   qualifier:
                     type: string
                 required:
@@ -555,7 +590,65 @@ paths:
                         type: array
                         items:
                           $ref: '#/components/schemas/Bam'
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        404:
+          $ref: '#/components/responses/404'
+  /order/{order_id}/bam_pair:
+    parameters:
+      - $ref: '#/components/parameters/order_id_path'
+    post:
+      summary: Add Bam Pairs to Order
+      tags:
+        - Order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  case_bam_id:
+                    $ref: '#/components/schemas/case_bam_id'
+                  control_bam_id:
+                    $ref: '#/components/schemas/control_bam_id'
+                  notes:
+                    $ref: '#/components/schemas/notes'
+                  qualifier:
+                    type: string
+                required:
+                  - case_bam_id
+                  - control_bam_id
+      responses:
+        201:
+          description: Bam Added
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    allOf:
+                      - $ref: '#/components/schemas/Order'
+                    properties:
+                      bams:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Bam'
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        404:
+          $ref: '#/components/responses/404'
   /order/{order_id}/status:
+    parameters:
+      - $ref: '#/components/parameters/order_id_path'
     post:
       summary: Update Order Status
       tags:
@@ -1960,6 +2053,18 @@ components:
       description: The name of the analysis type to be performed
       example: intake
       type: string
+    bam_id:
+      description: The primary key for a Bam record
+      example: 1
+      type: integer
+    case_bam_id:
+      description: The primary key of a Bam to use as the case Bam for a Bam Pair
+      oneOf:
+        - $ref: '#/components/schemas/bam_id'
+    control_bam_id:
+      description: The primary key of a Bam to use as the control Bam for a Bam Pair
+      oneOf:
+        - $ref: '#/components/schemas/bam_id'
     disease_code:
       description: A short code used to indicate a disease
       example: NORM
@@ -1971,6 +2076,9 @@ components:
     lab_name:
       description: The combination of a Sample's name and its secondary identifier
       example: SJNORM012345_D1-sample1
+      type: string
+    notes:
+      description: Notes to add to the record
       type: string
     pi_name:
       description: A secondary identifier for a Sample
