@@ -569,6 +569,8 @@ paths:
               items:
                 type: object
                 properties:
+                  anls_type_name:
+                    $ref: '#/components/schemas/anls_type_name'
                   project_name:
                     $ref: '#/components/schemas/project_name'
                   subproject:
@@ -635,6 +637,65 @@ paths:
                 required:
                   - case_bam_id
                   - control_bam_id
+      responses:
+        201:
+          description: Bam Added
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                properties:
+                  data:
+                    allOf:
+                      - $ref: '#/components/schemas/Order'
+                    properties:
+                      bams:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Bam'
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        404:
+          $ref: '#/components/responses/404'
+  /order/{order_id}/topoff:
+    parameters:
+      - $ref: '#/components/parameters/order_id_path'
+    post:
+      summary: Topoff a Bam
+      description:
+        This endpoint marks the old Bam as no longer primary, creates new Bam
+        Pairs to replace old Bam Pairs that included the old Bam, and does the
+        same for all active Orders that include that Bam.
+      tags:
+        - Order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                anls_type_name:
+                  $ref: '#/components/schemas/anls_type_name'
+                project_name:
+                  $ref: '#/components/schemas/project_name'
+                subproject:
+                  $ref: '#/components/schemas/subproject'
+                sample_name:
+                  $ref: '#/components/schemas/sample_name'
+                target_name:
+                  $ref: '#/components/schemas/target_name'
+                  type: string
+                notes:
+                  $ref: '#/components/schemas/notes'
+                qualifier:
+                  type: string
+              required:
+                - sample_name
+                - target_name
       responses:
         201:
           description: Bam Added
