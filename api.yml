@@ -255,6 +255,8 @@ paths:
             schema:
               type: object
               properties:
+                anls_type_name:
+                  $ref: '#/components/schemas/anls_type_name'
                 project_name:
                   $ref: '#/components/schemas/project_name'
                 subproject:
@@ -471,6 +473,8 @@ paths:
             schema:
               type: object
               properties:
+                anls_type_name:
+                  $ref: '#/components/schemas/anls_type_name'
                 project_name:
                   $ref: '#/components/schemas/project_name'
                 subproject:
